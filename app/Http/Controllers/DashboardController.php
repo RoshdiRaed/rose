@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use App\Models\Portfolio;
 use App\Models\ContactInfo;
+use App\Models\ContactSubmission;
 use App\Models\About;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
@@ -20,7 +22,7 @@ class DashboardController extends Controller
     // Contact Submissions
     public function contactSubmissions()
     {
-        $submissions = \App\Models\ContactSubmission::latest()->get();
+        $submissions = ContactSubmission::latest()->paginate(10);
         return view('dashboard.contacts.index', compact('submissions'));
     }
 
@@ -279,60 +281,38 @@ class DashboardController extends Controller
 
     public function updateWelcomeContent(Request $request)
     {
-        $validated = $request->validate(
-            [
-                'title_en' => 'required|string|max:255',
-                'title_ar' => 'required|string|max:255',
-                'subtitle_en' => 'required|string|max:500',
-                'subtitle_ar' => 'required|string|max:500',
-                'description_en' => 'required|string',
-                'description_ar' => 'required|string',
-                'main_image' => 'nullable|image|max:5120',
-                'cta_text_en' => 'required|string|max:100',
-                'cta_text_ar' => 'required|string|max:100',
-                'cta_link' => 'required|string|max:255',
-                'hero_image' => 'nullable|image|max:5120',
-            ],
-            [
-                'title_en.required' => 'The English title field is required.',
-                'title_en.max' => 'The English title may not be greater than 255 characters.',
-                'title_ar.required' => 'The Arabic title field is required.',
-                'title_ar.max' => 'The Arabic title may not be greater than 255 characters.',
-                'subtitle_en.required' => 'The English subtitle field is required.',
-                'subtitle_en.max' => 'The English subtitle may not be greater than 500 characters.',
-                'subtitle_ar.required' => 'The Arabic subtitle field is required.',
-                'subtitle_ar.max' => 'The Arabic subtitle may not be greater than 500 characters.',
-                'description_en.required' => 'The English description field is required.',
-                'description_ar.required' => 'The Arabic description field is required.',
-                'main_image.image' => 'The main image must be an image file.',
-                'main_image.max' => 'The main image size must not exceed 5MB.',
-                'cta_text_en.required' => 'The English CTA text field is required.',
-                'cta_text_en.max' => 'The English CTA text may not be greater than 100 characters.',
-                'cta_text_ar.required' => 'The Arabic CTA text field is required.',
-                'cta_text_ar.max' => 'The Arabic CTA text may not be greater than 100 characters.',
-                'cta_link.required' => 'The CTA link field is required.',
-                'cta_link.max' => 'The CTA link may not be greater than 255 characters.',
-                'hero_image.image' => 'The hero image must be an image file.',
-                'hero_image.max' => 'The hero image size must not exceed 5MB.',
-            ]
-        );
+        $validated = $request->validate([
+            'title_en' => 'required|string|max:255',
+            'title_ar' => 'required|string|max:255',
+            'description_en' => 'required|string',
+            'description_ar' => 'required|string',
+            'image' => 'nullable|image|max:5120',
+            'cta_text_en' => 'required|string|max:100',
+            'cta_text_ar' => 'required|string|max:100',
+            'cta_link' => 'required|string|max:255',
+        ], [
+            'title_en.required' => 'The English title field is required.',
+            'title_ar.required' => 'The Arabic title field is required.',
+            'description_en.required' => 'The English description field is required.',
+            'description_ar.required' => 'The Arabic description field is required.',
+            'image.image' => 'The image must be an image file.',
+            'image.max' => 'The image size must not exceed 5MB.',
+            'cta_text_en.required' => 'The English CTA text field is required.',
+            'cta_text_en.max' => 'The English CTA text may not be greater than 100 characters.',
+            'cta_text_ar.required' => 'The Arabic CTA text field is required.',
+            'cta_text_ar.max' => 'The Arabic CTA text may not be greater than 100 characters.',
+            'cta_link.required' => 'The CTA link field is required.',
+            'cta_link.max' => 'The CTA link may not be greater than 255 characters.',
+        ]);
 
         $about = About::firstOrNew();
         
-        if ($request->hasFile('main_image')) {
+        if ($request->hasFile('image')) {
             // Delete old image if exists
-            if ($about->main_image) {
-                Storage::disk('public')->delete($about->main_image);
+            if ($about->image) {
+                Storage::disk('public')->delete($about->image);
             }
-            $validated['main_image'] = $request->file('main_image')->store('about', 'public');
-        }
-
-        if ($request->hasFile('hero_image')) {
-            // Delete old image if exists
-            if ($about->hero_image) {
-                Storage::disk('public')->delete($about->hero_image);
-            }
-            $validated['hero_image'] = $request->file('hero_image')->store('about', 'public');
+            $validated['image'] = $request->file('image')->store('about', 'public');
         }
 
         $about->fill($validated);
@@ -442,7 +422,7 @@ class DashboardController extends Controller
         }
 
         $testimonial->update($validated);
-        return redirect()->route('dashboard.testimonials')
+        return redirect()->route('dashboard.testimonials.index')
             ->with('success', 'Testimonial updated successfully!');
     }
 

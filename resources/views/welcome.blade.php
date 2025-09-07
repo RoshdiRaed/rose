@@ -57,20 +57,27 @@
                 </p>
             </div>
             <div class="grid md:grid-cols-3 gap-12">
-                @foreach (\App\Models\Service::take(3)->get() as $service)
+                @forelse($services as $service)
                     <div class="bg-gray-50 p-8 rounded-xl shadow-lg card-hover" data-aos="fade-up"
                         data-aos-delay="{{ $loop->index * 200 }}">
+                        <div class="text-4xl mb-4 text-yellow-400">
+                            <i class="{{ $service->icon }}"></i>
+                        </div>
                         <h3 class="text-2xl font-semibold mb-3 text-gray-800">
-                            {{ app()->getLocale() === 'ar' ? $service->title_ar : $service->title_en }}
+                            {{ $service->{"title_" . app()->getLocale()} }}
                         </h3>
                         <p class="text-gray-600 mb-4">
-                            {{ app()->getLocale() === 'ar' ? $service->description_ar : $service->description_en }}
+                            {{ Str::limit($service->{"description_" . app()->getLocale()}, 150) }}
                         </p>
                         <a href="{{ route('services') }}" class="text-yellow-400 hover:text-yellow-500 font-medium">
                             {{ app()->getLocale() === 'ar' ? 'تعرف على المزيد' : 'Learn More' }}
                         </a>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-span-3 text-center py-12">
+                        <p class="text-gray-500">{{ __('No services available at the moment.') }}</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -79,27 +86,93 @@
     <section class="py-24 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
             @php $about = \App\Models\About::first(); @endphp
-            <img src="{{ asset('img/logo.png') }}" alt="Company Logo" class="rounded-xl shadow-lg" data-aos="fade-right"
-                data-aos-delay="100">
-            <div data-aos="fade-left" data-aos-delay="0">
-                <h2 class="text-3xl font-bold mb-4">
-                    @if ($about)
-                        {{ app()->getLocale() === 'ar' ? $about->title_ar : $about->title_en }}
-                    @else
-                        {{ app()->getLocale() === 'ar' ? 'حلول أمنية مخصصة' : 'Tailored Security Solutions' }}
-                    @endif
+            <img src="{{ $about && $about->image ? asset('storage/' . $about->image) : asset('img/about.png') }}" 
+                 alt="{{ $about ? $about->{"title_" . app()->getLocale()} : 'Company Logo' }}" 
+                 class="rounded-xl shadow-lg w-full h-auto max-h-96 object-cover" 
+                 data-aos="fade-right"
+                 data-aos-delay="100">
+            <div data-aos="fade-left" data-aos-delay="200">
+                <h2 class="text-4xl font-bold mb-6 text-gray-800">
+                    {{ $about ? $about->{"title_" . app()->getLocale()} : (app()->getLocale() === 'ar' ? 'من نحن' : 'About Us') }}
                 </h2>
-                <p class="text-gray-600 mb-6">
-                    @if ($about)
-                        {{ app()->getLocale() === 'ar' ? $about->description_ar : $about->description_en }}
+                @if($about)
+                    <div class="prose max-w-none text-gray-600 mb-6 leading-relaxed">
+                        {!! nl2br(e($about->{"description_" . app()->getLocale()})) !!}
+                    </div>
+                @else
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        {{ app()->getLocale() === 'ar' 
+                            ? 'نحن شركة رائدة في مجال الخدمات الأمنية، نقدم حلولاً متكاملة لحماية الأفراد والممتلكات بأعلى معايير الجودة والكفاءة.'
+                            : 'We are a leading security services company, providing integrated solutions to protect individuals and property with the highest standards of quality and efficiency.' }}
+                    </p>
+                @endif
+                
+                <div class="space-y-4">
+                    @if($about && $about->features)
+                        @foreach($about->features as $feature)
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <p class="ml-3 text-gray-600">
+                                    {{ $feature["feature_" . app()->getLocale()] }}
+                                </p>
+                            </div>
+                        @endforeach
                     @else
-                        {{ app()->getLocale() === 'ar' ? 'نحن نقدم خدمات أمنية شاملة...' : 'We provide comprehensive security services...' }}
+                        <!-- Default features if no about data -->
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1">
+                                <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <p class="ml-3 text-gray-600">
+                                {{ app()->getLocale() === 'ar' 
+                                    ? 'فريق محترف من ذوي الخبرة والكفاءة العالية' 
+                                    : 'Professional team with high experience and efficiency' }}
+                            </p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1">
+                                <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <p class="ml-3 text-gray-600">
+                                {{ app()->getLocale() === 'ar' 
+                                    ? 'أحدث التقنيات والمعدات المتطورة' 
+                                    : 'Latest technologies and advanced equipment' }}
+                            </p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1">
+                                <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <p class="ml-3 text-gray-600">
+                                {{ app()->getLocale() === 'ar' 
+                                    ? 'خدمات مخصصة تلبي احتياجاتك الأمنية' 
+                                    : 'Customized services that meet your security needs' }}
+                            </p>
+                        </div>
                     @endif
-                </p>
-                <a href="{{ route('contact') }}"
-                    class="btn-primary inline-block bg-yellow-400 text-gray-900 px-8 py-4 rounded-full font-semibold hover:bg-yellow-500">
-                    {{ app()->getLocale() === 'ar' ? 'اكتشف المزيد' : 'Discover More' }}
-                </a>
+                </div>
+                
+                @if($about && $about->cta_link)
+                    <a href="{{ $about->cta_link }}"
+                        class="mt-8 inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-full transition duration-300 transform hover:scale-105">
+                        {{ $about->{"cta_text_" . app()->getLocale()} }}
+                    </a>
+                @else
+                    <a href="{{ route('about') }}"
+                        class="mt-8 inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-full transition duration-300 transform hover:scale-105">
+                        {{ app()->getLocale() === 'ar' ? 'اقرأ المزيد' : 'Read More' }}
+                    </a>
+                @endif
             </div>
         </div>
     </section>

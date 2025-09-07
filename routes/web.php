@@ -3,14 +3,20 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ContactInfoController;
+use App\Http\Controllers\WelcomePageController;
 use Illuminate\Support\Facades\Route;
 
 // Language Switch Route
-Route::get('language/{lang}', [\App\Http\Controllers\LanguageController::class, 'switchLang'])->name('language.switch');
+Route::get('language/{lang}', [\App\Http\Controllers\LanguageController::class, 'switchLang'])
+    ->name('language.switch');
 
 // Public Routes
 Route::get('/', function () {
-    return view('welcome');
+    $services = \App\Models\Service::active()->ordered()->take(3)->get();
+    $about = \App\Models\About::first();
+    return view('welcome', compact('services', 'about'));
 })->name('home');
 
 Route::get('/services', function () {
@@ -43,6 +49,18 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     // Contact Submissions
     Route::get('/contact-submissions', [DashboardController::class, 'contactSubmissions'])->name('contact-submissions');
     Route::delete('/contact-submissions/{id}', [DashboardController::class, 'deleteContactSubmission'])->name('contact-submissions.destroy');
+
+    // About Page Routes
+    Route::get('/dashboard/about', [AboutController::class, 'edit'])->name('dashboard.about.edit');
+    Route::put('/dashboard/about', [AboutController::class, 'update'])->name('dashboard.about.update');
+    
+    // Contact Info Routes
+    Route::get('/dashboard/contact-info', [ContactInfoController::class, 'edit'])->name('dashboard.contact-info.edit');
+    Route::put('/dashboard/contact-info', [ContactInfoController::class, 'update'])->name('dashboard.contact-info.update');
+    
+    // Welcome Page Editor Routes
+    Route::get('/dashboard/welcome', [WelcomePageController::class, 'edit'])->name('dashboard.welcome.edit');
+    Route::put('/dashboard/welcome', [WelcomePageController::class, 'update'])->name('dashboard.welcome.update');
 
     // Services Management
     Route::prefix('dashboard/services')->name('dashboard.services.')->group(function () {

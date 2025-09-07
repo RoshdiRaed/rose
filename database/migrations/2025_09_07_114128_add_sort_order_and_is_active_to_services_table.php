@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->text('icon')->change();
+            $table->integer('sort_order')->default(0)->after('icon');
+            $table->boolean('is_active')->default(true)->after('sort_order');
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->string('icon', 1000)->change();
+            $table->dropColumn(['sort_order', 'is_active']);
         });
     }
 };

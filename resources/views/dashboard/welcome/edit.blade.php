@@ -55,31 +55,6 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="subtitle_en">English Subtitle *</label>
-                                <input type="text" name="subtitle_en" id="subtitle_en" class="form-control @error('subtitle_en') is-invalid @enderror" value="{{ old('subtitle_en', $about->subtitle_en ?? '') }}" required>
-                                @error('subtitle_en')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="subtitle_ar">Arabic Subtitle *</label>
-                                <input type="text" name="subtitle_ar" id="subtitle_ar" class="form-control @error('subtitle_ar') is-invalid @enderror text-right" dir="rtl" value="{{ old('subtitle_ar', $about->subtitle_ar ?? '') }}" required>
-                                @error('subtitle_ar')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
                                 <label for="description_en">English Description *</label>
                                 <textarea name="description_en" id="description_en" class="form-control @error('description_en') is-invalid @enderror" rows="5" required>{{ old('description_en', $about->description_en ?? '') }}</textarea>
                                 @error('description_en')
@@ -140,42 +115,22 @@
                     <hr class="my-4">
                     
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="hero_image">Hero Background Image</label>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input @error('hero_image') is-invalid @enderror" id="hero_image" name="hero_image" accept="image/*">
-                                    <label class="custom-file-label" for="hero_image">Choose file</label>
-                                    @error('hero_image')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <small class="form-text text-muted">Recommended size: 1920x1080px. Leave empty to keep current image.</small>
-                                @if(isset($about->hero_image) && $about->hero_image)
-                                    <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $about->hero_image) }}" alt="Current Hero Image" class="img-fluid mt-2" style="max-height: 200px;">
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label for="main_image">About Section Image</label>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input @error('main_image') is-invalid @enderror" id="main_image" name="main_image" accept="image/*">
-                                    <label class="custom-file-label" for="main_image">Choose file</label>
-                                    @error('main_image')
+                                    <input type="file" class="custom-file-input @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
+                                    <label class="custom-file-label" for="image">Choose file</label>
+                                    @error('image')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
                                 </div>
                                 <small class="form-text text-muted">Recommended size: 800x600px. Leave empty to keep current image.</small>
-                                @if(isset($about->main_image) && $about->main_image)
+                                @if(isset($about->image) && $about->image)
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $about->main_image) }}" alt="Current About Image" class="img-fluid mt-2" style="max-height: 200px;">
+                                        <img src="{{ asset('storage/' . $about->image) }}" alt="Current About Image" class="img-fluid mt-2" style="max-height: 200px;">
                                     </div>
                                 @endif
                             </div>

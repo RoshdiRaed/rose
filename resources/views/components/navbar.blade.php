@@ -26,10 +26,12 @@
 
         <!-- Right side -->
         <div class="flex items-center gap-4">
-            <a href="{{ route('language.switch', app()->getLocale() === 'en' ? 'ar' : 'en') }}"
-                class="px-3 py-1 rounded-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900 transition">
-                {{ app()->getLocale() === 'en' ? 'العربية' : 'English' }}
-            </a>
+            <form action="{{ route('language.switch', app()->getLocale() === 'en' ? 'ar' : 'en') }}" method="GET" class="inline">
+                @csrf
+                <button type="submit" class="px-3 py-1 rounded-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900 transition focus:outline-none">
+                    {{ app()->getLocale() === 'en' ? 'العربية' : 'English' }}
+                </button>
+            </form>
 
             <!-- Hamburger (Mobile only) -->
             <button id="menu-btn" class="md:hidden flex flex-col gap-1.5">

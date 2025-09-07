@@ -20,7 +20,7 @@
 </head>
 <body class="bg-gray-50 text-gray-900 leading-relaxed">
     @include('components.navbar')
-
+    
     @yield('content')
 
     @include('layouts.footer')
