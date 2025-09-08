@@ -167,30 +167,40 @@
         </div>
     </div>
 
-    <!-- Welcome Page Edit -->
-    <div class="small-box bg-danger">
-        <div class="inner">
-            <h3>Welcome Page</h3>
-            <p>Edit Content</p>
+<!-- Welcome Page Management Section -->
+<div class="bg-white rounded-xl shadow-md overflow-hidden mb-8" data-aos="fade-up" data-aos-delay="100">
+    <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900">{{ __('Welcome Page Management') }}</h2>
+                <p class="text-gray-600 mt-1">{{ __('Customize your website\'s welcome page content') }}</p>
+            </div>
+            <div class="p-3 bg-red-50 rounded-lg">
+                <svg class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+            </div>
         </div>
-        <div class="icon">
-            <i class="fas fa-home"></i>
-        </div>
-        <a href="{{ route('dashboard.welcome.edit') }}" class="small-box-footer">
-            Edit Content <i class="fas fa-arrow-circle-right"></i>
-        </a>
-    </div>
-
-    <!-- Recent Activity -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Recent Activity</h3>
+        
+        <div class="bg-gradient-to-r from-red-50 to-pink-50 rounded-lg p-6 border border-red-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold text-red-900 mb-2">{{ __('Homepage Content') }}</h3>
+                    <p class="text-red-700 mb-4">{{ __('Update headlines, descriptions, images, and other content displayed on your website\'s welcome page') }}</p>
+                    <div class="flex items-center text-sm text-red-600">
+                        <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {{ __('Changes will be reflected immediately on your live website') }}
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p>Welcome to your dashboard! Here you can manage your website content including services, portfolio items, contact information, and more.</p>
-                    <p>Use the navigation menu on the left to access different sections of the dashboard.</p>
+                <div class="ml-6">
+                    <a href="{{ route('dashboard.welcome.edit') }}" class="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                        <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        {{ __('Edit Welcome Page') }}
+                    </a>
                 </div>
             </div>
         </div>

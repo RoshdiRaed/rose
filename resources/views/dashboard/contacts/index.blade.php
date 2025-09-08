@@ -104,7 +104,7 @@
                             </dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900">
-                                    {{ $submissions->total() }}
+                                    {{ $totalSubmissions }}
                                 </div>
                             </dd>
                         </dl>
@@ -129,7 +129,7 @@
                             </dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900">
-                                    {{ $submissions->where('status', 'new')->count() }}
+                                    {{ $newCount }}
                                 </div>
                             </dd>
                         </dl>
@@ -154,7 +154,7 @@
                             </dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900">
-                                    {{ $submissions->where('status', 'read')->count() }}
+                                    {{ $readCount }}
                                 </div>
                             </dd>
                         </dl>
@@ -179,7 +179,7 @@
                             </dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900">
-                                    {{ $submissions->where('status', 'archived')->count() }}
+                                    {{ $archivedCount }}
                                 </div>
                             </dd>
                         </dl>
@@ -235,7 +235,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($submissions as $submission)
-                            <tr class="hover:bg-gray-50 {{ $submission->status === 'new' ? 'bg-blue-50' : '' }}">
+                            <tr id="submission-{{ $submission->id }}" class="hover:bg-gray-50 {{ $submission->status === 'new' ? 'bg-blue-50' : '' }}">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
@@ -282,6 +282,24 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex items-center justify-end space-x-2">
+                                        @if($submission->status !== 'read')
+                                        <button onclick="markAsRead({{ $submission->id }});" 
+                                                class="text-blue-600 hover:text-blue-900"
+                                                title="{{ __('Mark as Read') }}">
+                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </button>
+                                        @endif
+                                        @if($submission->status !== 'archived')
+                                        <button onclick="archiveSubmission({{ $submission->id }});" 
+                                                class="text-gray-600 hover:text-gray-900"
+                                                title="{{ __('Archive') }}">
+                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                            </svg>
+                                        </button>
+                                        @endif
                                         <button onclick="viewMessage({{ $submission->id }})" 
                                                 class="text-yellow-600 hover:text-yellow-900"
                                                 title="{{ __('View Message') }}">
@@ -452,81 +470,154 @@
         </div>
     </div>
 
-    @push('scripts')
-    <script>
-        function viewMessage(id) {
-            // Mark as read when viewing
-            fetch(`/dashboard/contact-submissions/${id}/read`, {
+@endsection
+
+@push('scripts')
+<script>
+    // FIXED: Mark as Read function
+    function markAsRead(id) {
+        fetch(`/dashboard/contact-submissions/${id}/read`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the status badge without reloading
+                const row = document.querySelector(`#submission-${id}`);
+                const statusBadge = row.querySelector('.status-badge');
+                const markReadBtn = row.querySelector('[onclick="markAsRead(' + id + ')"]');
+                
+                statusBadge.textContent = 'Read';
+                statusBadge.className = 'status-badge status-read';
+                row.classList.remove('bg-blue-50');
+                
+                // Remove the mark as read button
+                if (markReadBtn) {
+                    markReadBtn.remove();
+                }
+                
+                // Update counts
+                updateCounts();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error marking submission as read');
+        });
+    }
+    
+    // FIXED: Archive Submission function
+    function archiveSubmission(id) {
+        if (confirm('Are you sure you want to archive this submission?')) {
+            fetch(`/dashboard/contact-submissions/${id}/archive`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ _method: 'PATCH' })
-            }).then(response => {
-                if (response.ok) {
-                    // Update the status badge
-                    const statusBadge = document.querySelector(`#submission-${id} .status-badge`);
-                    if (statusBadge) {
-                        statusBadge.textContent = 'Read';
-                        statusBadge.className = 'status-badge status-read';
-                        statusBadge.closest('tr').classList.remove('bg-blue-50');
-                    }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the status badge without reloading
+                    const row = document.querySelector(`#submission-${id}`);
+                    const statusBadge = row.querySelector('.status-badge');
+                    const archiveBtn = row.querySelector('[onclick="archiveSubmission(' + id + ')"]');
+                    const markReadBtn = row.querySelector('[onclick="markAsRead(' + id + ')"]');
+                    
+                    statusBadge.textContent = 'Archived';
+                    statusBadge.className = 'status-badge status-archived';
+                    row.classList.remove('bg-blue-50');
+                    
+                    // Remove both archive and mark as read buttons
+                    if (archiveBtn) archiveBtn.remove();
+                    if (markReadBtn) markReadBtn.remove();
+                    
+                    // Update counts
+                    updateCounts();
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error archiving submission');
             });
-            
-            // Show the modal
-            document.getElementById(`messageModal${id}`).classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
         }
+    }
+    
+    // FIXED: View Message function - simplified
+    function viewMessage(id) {
+        // Show the modal first
+        document.getElementById(`messageModal${id}`).classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
         
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
+        // Then mark as read in background
+        const row = document.querySelector(`#submission-${id}`);
+        const statusBadge = row.querySelector('.status-badge');
+        
+        if (statusBadge && statusBadge.textContent.trim() === 'New') {
+            markAsRead(id);
+        }
+    }
+    
+    // Helper function to update counts
+    function updateCounts() {
+        // You can reload the page or make another AJAX call to update counts
+        // For now, we'll just reload after a short delay to show the changes
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+    
+    function confirmDelete(event, message) {
+        event.preventDefault();
+        const form = event.target.closest('form');
+        document.getElementById('deleteForm').action = form.action;
+        document.getElementById('deleteConfirmationModal').classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+    
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('bg-gray-500')) {
+            document.querySelectorAll('.fixed.inset-0.overflow-y-auto').forEach(modal => {
+                modal.classList.add('hidden');
+            });
             document.body.classList.remove('overflow-hidden');
         }
-        
-        function confirmDelete(event, message) {
-            event.preventDefault();
-            const form = event.target.closest('form');
-            document.getElementById('deleteForm').action = form.action;
-            document.getElementById('deleteConfirmationModal').classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
+    };
+    
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            document.querySelectorAll('.fixed.inset-0.overflow-y-auto').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+            document.body.classList.remove('overflow-hidden');
         }
-        
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('bg-gray-500')) {
-                document.querySelectorAll('.fixed.inset-0.overflow-y-auto').forEach(modal => {
-                    modal.classList.add('hidden');
-                });
-                document.body.classList.remove('overflow-hidden');
-            }
-        };
-        
-        // Close modals with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                document.querySelectorAll('.fixed.inset-0.overflow-y-auto').forEach(modal => {
-                    modal.classList.add('hidden');
-                });
-                document.body.classList.remove('overflow-hidden');
-            }
-        });
-        
-        // Filter submissions by status
-        document.getElementById('status-filter').addEventListener('change', function() {
-            const status = this.value;
-            window.location.href = `?status=${status}`;
-        });
-        
-        // Set the selected status in the filter dropdown
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get('status') || 'all';
-            document.getElementById('status-filter').value = status;
-        });
-    </script>
-    @endpush
-
-@endsection
+    });
+    
+    // Filter submissions by status
+    document.getElementById('status-filter').addEventListener('change', function() {
+        const status = this.value;
+        window.location.href = `?status=${status}`;
+    });
+    
+    // Set the selected status in the filter dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status') || 'all';
+        document.getElementById('status-filter').value = status;
+    });
+</script>
+@endpush

@@ -20,10 +20,45 @@ class DashboardController extends Controller
     }
 
     // Contact Submissions
+    public function show($id)
+    {
+        $submission = ContactSubmission::findOrFail($id);
+        return response()->json($submission);
+    }
+    
     public function contactSubmissions()
     {
         $submissions = ContactSubmission::latest()->paginate(10);
-        return view('dashboard.contacts.index', compact('submissions'));
+        
+        // Get counts for each status
+        $totalSubmissions = ContactSubmission::count();
+        $newCount = ContactSubmission::where('status', 'new')->count();
+        $readCount = ContactSubmission::where('status', 'read')->count();
+        $archivedCount = ContactSubmission::where('status', 'archived')->count();
+        
+        return view('dashboard.contacts.index', [
+            'submissions' => $submissions,
+            'totalSubmissions' => $totalSubmissions,
+            'newCount' => $newCount,
+            'readCount' => $readCount,
+            'archivedCount' => $archivedCount
+        ]);
+    }
+    
+    public function markAsRead($id)
+    {
+        $submission = ContactSubmission::findOrFail($id);
+        $submission->update(['status' => 'read']);
+        
+        return response()->json(['success' => true]);
+    }
+    
+    public function archive($id)
+    {
+        $submission = ContactSubmission::findOrFail($id);
+        $submission->update(['status' => 'archived']);
+        
+        return response()->json(['success' => true]);
     }
 
     public function deleteContactSubmission($id)

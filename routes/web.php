@@ -3,8 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AboutController;
-use App\Http\Controllers\ContactInfoController;
+// use App\Http\Controllers\AboutController;
+// use App\Http\Controllers\ContactInfoController;
 use App\Http\Controllers\WelcomePageController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,15 +48,18 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
     // Contact Submissions
     Route::get('/contact-submissions', [DashboardController::class, 'contactSubmissions'])->name('contact-submissions');
+    Route::get('/contact-submissions/{id}', [DashboardController::class, 'show'])->name('contact-submissions.show');
+    Route::post('/contact-submissions/{id}/read', [DashboardController::class, 'markAsRead'])->name('contact-submissions.read');
+    Route::post('/contact-submissions/{id}/archive', [DashboardController::class, 'archive'])->name('contact-submissions.archive');
     Route::delete('/contact-submissions/{id}', [DashboardController::class, 'deleteContactSubmission'])->name('contact-submissions.destroy');
 
     // About Page Routes
-    Route::get('/dashboard/about', [AboutController::class, 'edit'])->name('dashboard.about.edit');
-    Route::put('/dashboard/about', [AboutController::class, 'update'])->name('dashboard.about.update');
+    // Route::get('/dashboard/about', [AboutController::class, 'edit'])->name('dashboard.about.edit');
+    // Route::put('/dashboard/about', [AboutController::class, 'update'])->name('dashboard.about.update');
     
-    // Contact Info Routes
-    Route::get('/dashboard/contact-info', [ContactInfoController::class, 'edit'])->name('dashboard.contact-info.edit');
-    Route::put('/dashboard/contact-info', [ContactInfoController::class, 'update'])->name('dashboard.contact-info.update');
+    // // Contact Info Routes
+    // Route::get('/dashboard/contact-info', [ContactInfoController::class, 'edit'])->name('dashboard.contact-info.edit');
+    // Route::put('/dashboard/contact-info', [ContactInfoController::class, 'update'])->name('dashboard.contact-info.update');
     
     // Welcome Page Editor Routes
     Route::get('/dashboard/welcome', [WelcomePageController::class, 'edit'])->name('dashboard.welcome.edit');
