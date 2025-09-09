@@ -4,19 +4,36 @@
 
 @push('styles')
 <style>
+    .rating-stars {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem; /* Increased spacing between stars */
+    }
     .rating-stars input[type="radio"] {
-        display: none;
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
     }
-    .rating-stars label i {
-        transition: all 0.2s ease-in-out;
+    .rating-stars label {
         cursor: pointer;
-        font-size: 1.25rem;
-        color: #e2e8f0;
+        padding: 0.3rem;
+        transition: transform 0.3s ease, color 0.3s ease; /* Smoother transition */
     }
-    .rating-stars input[type="radio"]:checked ~ label i,
-    .rating-stars label:hover i,
-    .rating-stars label:hover ~ label i {
-        color: #f59e0b;
+    .rating-stars label:hover {
+        transform: rotate(15deg); /* Rotate instead of scale on hover */
+    }
+    .rating-stars .fa-star {
+        transition: color 0.3s ease;
+        font-size: 1.5rem; /* Larger stars */
+        color: #d1d5db; /* Lighter gray for unselected stars */
+    }
+    .rating-stars input[type="radio"]:checked + label .fa-star {
+        color: #eab308; /* Brighter yellow for selected stars */
+        font-weight: 900; /* Solid star for selected */
+    }
+    .rating-stars label:hover .fa-star {
+        color: #facc15; /* Slightly lighter yellow for hover */
     }
     .image-upload-container {
         border: 2px dashed #e5e7eb;
@@ -24,7 +41,7 @@
         padding: 2rem;
         text-align: center;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
         background-color: #f9fafb;
     }
     .image-upload-container:hover,
@@ -32,13 +49,21 @@
         border-color: #f59e0b;
         background-color: #fefce8;
     }
-    .preview-image {
-        width: 80px;
-        height: 80px;
+    #previewImg {
+        width: 64px;
+        height: 64px;
         object-fit: cover;
         border-radius: 50%;
-        border: 2px solid #fff;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    .image-upload-container:hover #upload-prompt {
+        animation: pulse 2s infinite;
     }
 </style>
 @endpush
@@ -54,18 +79,16 @@
             <nav class="flex" aria-label="Breadcrumb">
                 <ol class="flex items-center space-x-4">
                     <li>
-                        <div>
-                            <a href="{{ route('dashboard') }}" class="text-gray-500 hover:text-gray-700">
-                                <svg class="flex-shrink-0 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                                </svg>
-                                <span class="sr-only">{{ __('Home') }}</span>
-                            </a>
-                        </div>
+                        <a href="{{ route('dashboard') }}" class="text-gray-500 hover:text-gray-700">
+                            <svg class="flex-shrink-0 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                            </svg>
+                            <span class="sr-only">{{ __('Home') }}</span>
+                        </a>
                     </li>
                     <li>
                         <div class="flex items-center">
-                            <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                             </svg>
                             <a href="{{ route('dashboard.testimonials.index') }}" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">
@@ -75,7 +98,7 @@
                     </li>
                     <li>
                         <div class="flex items-center">
-                            <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                             </svg>
                             <span class="ml-4 text-sm font-medium text-gray-500">
@@ -197,74 +220,103 @@
                             </div>
 
                             <!-- Rating & Image Section -->
-                            <div class="sm:col-span-6 pt-5">
-                                <h3 class="text-lg font-medium leading-6 text-gray-900">{{ __('Rating & Profile Image') }}</h3>
-                                <div class="mt-4 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                            <div class="sm:col-span-6 pt-6">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                                    <i class="fas fa-star-half-alt text-yellow-500 mr-2"></i>
+                                    {{ __('Rating & Profile Image') }}
+                                </h3>
+                                <div class="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2">
                                     <!-- Rating -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">
-                                            {{ __('Rating') }} <span class="text-red-500">*</span>
-                                        </label>
-                                        <div class="mt-1 flex items-center">
-                                            <div class="rating-stars flex">
-                                                @for($i = 5; $i >= 1; $i--)
-                                                    <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}"
-                                                        {{ old('rating') == $i ? 'checked' : '' }} required>
-                                                    <label for="star{{ $i }}" class="cursor-pointer">
-                                                        <i class="far fa-star text-gray-300"></i>
-                                                    </label>
-                                                @endfor
-                                            </div>
-                                            <span id="rating-value" class="ml-3 text-sm text-gray-600 font-medium">
-                                                {{ old('rating') ? old('rating') . ' Star' . (old('rating') > 1 ? 's' : '') : 'Not rated' }}
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <label class="block text-sm font-medium text-gray-700">
+                                                {{ __('Rating') }} <span class="text-red-500">*</span>
+                                            </label>
+                                            <span id="rating-value" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                {{ old('rating') ? old('rating') . ' ' . __('Star') . (old('rating') > 1 ? 's' : '') : __('Not rated') }}
                                             </span>
                                         </div>
+                                        <div class="rating-stars flex space-x-1">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <div class="relative">
+                                                    <input type="radio" 
+                                                           id="star{{ $i }}" 
+                                                           name="rating" 
+                                                           value="{{ $i }}"
+                                                           {{ old('rating') == $i ? 'checked' : '' }}
+                                                           class="sr-only">
+                                                    <label for="star{{ $i }}" class="cursor-pointer">
+                                                        <i class="far fa-star text-2xl {{ old('rating') >= $i ? 'text-yellow-400' : 'text-gray-300' }}"></i>
+                                                    </label>
+                                                </div>
+                                            @endfor
+                                        </div>
                                         @error('rating')
-                                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                            <p class="mt-1 text-sm text-red-600 flex items-center">
+                                                <i class="fas fa-exclamation-circle mr-1"></i> {{ $message }}
+                                            </p>
                                         @enderror
-                                        <p class="mt-2 text-sm text-gray-500">{{ __('Select a rating from 1 to 5 stars') }}</p>
+                                        <p class="mt-2 text-sm text-gray-500 flex items-center">
+                                            <i class="fas fa-info-circle mr-1.5 text-blue-500"></i>
+                                            {{ __('Select a rating from 1 to 5 stars') }}
+                                        </p>
                                     </div>
 
                                     <!-- Image Upload -->
-                                    <div>
+                                    <div class="space-y-3">
                                         <label class="block text-sm font-medium text-gray-700">
                                             {{ __('Profile Image') }}
+                                            <span class="text-xs font-normal text-gray-500">({{ __('Optional') }})</span>
                                         </label>
-                                        <div class="mt-1">
-                                            <div class="image-upload-container relative" id="image-upload-container">
-                                                <input type="file" class="hidden" id="image" name="image" accept="image/*">
-                                                <!-- Initial Upload Prompt -->
-                                                <div id="upload-prompt" class="space-y-2">
-                                                    <div class="mx-auto w-12 h-12 flex items-center justify-center bg-yellow-50 rounded-full">
-                                                        <i class="fas fa-camera text-yellow-500 text-lg"></i>
+                                        <div class="image-upload-container relative group" id="image-upload-container">
+                                            <input type="file" class="hidden" id="image" name="image" accept="image/*">
+                                            <div id="upload-prompt" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-yellow-400 transition-colors duration-200 group-hover:shadow-md">
+                                                <div class="space-y-3">
+                                                    <div class="mx-auto w-16 h-16 flex items-center justify-center bg-yellow-50 rounded-full group-hover:bg-yellow-100 transition-colors duration-200">
+                                                        <i class="fas fa-cloud-upload-alt text-yellow-500 text-2xl"></i>
                                                     </div>
-                                                    <div class="text-sm text-gray-600">
-                                                        <p class="font-medium">{{ __('Upload a profile photo') }}</p>
-                                                        <p class="text-xs text-gray-500 mt-1">{{ __('Recommended: 200x200px (Max: 2MB)') }}</p>
+                                                    <div>
+                                                        <p class="text-sm font-medium text-gray-700">
+                                                            {{ __('Drag & drop your photo') }}
+                                                        </p>
+                                                        <p class="text-xs text-gray-500 mt-1">
+                                                            {{ __('or click to browse') }}
+                                                        </p>
+                                                        <p class="text-xs text-gray-400 mt-2">
+                                                            {{ __('Recommended: 200x200px (Max: 2MB)') }}
+                                                        </p>
                                                     </div>
                                                 </div>
-                                                <!-- File Info & Preview -->
-                                                <div id="file-info" class="hidden">
-                                                    <div class="flex flex-col items-center">
-                                                        <div class="relative mb-3">
-                                                            <img id="previewImg" src="#" alt="Preview" class="preview-image">
-                                                            <button type="button" id="change-image" class="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-sm hover:bg-gray-100 focus:outline-none">
-                                                                <i class="fas fa-sync-alt text-yellow-500 text-xs"></i>
+                                            </div>
+                                            <div id="file-info" class="hidden">
+                                                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                                    <div class="flex items-center space-x-4">
+                                                        <div class="relative">
+                                                            <img id="previewImg" src="#" alt="Preview" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm">
+                                                            <button type="button" id="change-image" class="absolute -bottom-1 -right-1 bg-white rounded-full p-1.5 shadow-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2" title="{{ __('Change image') }}">
+                                                                <i class="fas fa-pencil-alt text-yellow-500 text-xs"></i>
                                                             </button>
                                                         </div>
-                                                        <div class="text-center">
-                                                            <p id="file-name" class="text-sm font-medium text-gray-700 truncate max-w-xs"></p>
-                                                            <button type="button" id="remove-file" class="mt-1 text-xs text-red-500 hover:text-red-700 focus:outline-none">
-                                                                <i class="fas fa-times mr-1"></i> {{ __('Remove') }}
-                                                            </button>
+                                                        <div class="flex-1 min-w-0">
+                                                            <p id="file-name" class="text-sm font-medium text-gray-900 truncate"></p>
+                                                            <div class="mt-1 flex items-center space-x-2">
+                                                                <span class="text-xs text-gray-500">
+                                                                    <i class="far fa-image mr-1"></i> {{ __('Image') }}
+                                                                </span>
+                                                                <button type="button" id="remove-file" class="text-xs text-red-500 hover:text-red-700 focus:outline-none flex items-center">
+                                                                    <i class="fas fa-trash-alt mr-1"></i> {{ __('Remove') }}
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            @error('image')
-                                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                            @enderror
                                         </div>
+                                        @error('image')
+                                            <p class="mt-1 text-sm text-red-600 flex items-center">
+                                                <i class="fas fa-exclamation-circle mr-1"></i> {{ $message }}
+                                            </p>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -296,33 +348,59 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Rating Stars Functionality
-        const starInputs = document.querySelectorAll('.rating-stars input[type="radio"]');
+        const ratingStars = document.querySelectorAll('.rating-stars input[type="radio"]');
         const ratingValue = document.getElementById('rating-value');
-        
-        starInputs.forEach(star => {
-            if (star.checked) {
-                updateStarRating(star.value);
-            }
-            
-            star.addEventListener('change', function() {
-                updateStarRating(this.value);
-            });
-        });
-        
-        function updateStarRating(value) {
-            const stars = document.querySelectorAll('.rating-stars label i');
-            stars.forEach((star, index) => {
-                if (index < value) {
-                    star.classList.remove('far');
-                    star.classList.add('fas', 'text-yellow-500');
+        let currentRating = {{ old('rating', 0) }};
+
+        function updateStars(rating) {
+            ratingStars.forEach((star, index) => {
+                const label = star.nextElementSibling;
+                const starIcon = label.querySelector('.fa-star');
+                if (index < rating) {
+                    star.checked = true;
+                    starIcon.classList.add('text-yellow-400', 'fas');
+                    starIcon.classList.remove('text-gray-300', 'far');
                 } else {
-                    star.classList.remove('fas', 'text-yellow-500');
-                    star.classList.add('far', 'text-gray-300');
+                    star.checked = false;
+                    starIcon.classList.add('text-gray-300', 'far');
+                    starIcon.classList.remove('text-yellow-400', 'fas');
                 }
             });
-            ratingValue.textContent = value + ' Star' + (value > 1 ? 's' : '');
+            if (rating > 0) {
+                const starsLabel = rating > 1 ? '{{ __("Stars") }}' : '{{ __("Star") }}';
+                ratingValue.textContent = `${rating} ${starsLabel}`;
+                ratingValue.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800';
+            } else {
+                ratingValue.textContent = '{{ __("Not rated") }}';
+                ratingValue.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800';
+            }
+            currentRating = rating;
         }
-        
+
+        updateStars(currentRating);
+
+        ratingStars.forEach((star, index) => {
+            const starNumber = index + 1;
+            star.addEventListener('change', () => {
+                updateStars(starNumber);
+            });
+            const label = star.nextElementSibling;
+            label.addEventListener('mouseenter', () => {
+                for (let i = 0; i < ratingStars.length; i++) {
+                    const hoverLabel = ratingStars[i].nextElementSibling;
+                    const hoverStar = hoverLabel.querySelector('.fa-star');
+                    if (i < starNumber) {
+                        hoverStar.classList.add('text-yellow-300');
+                    } else {
+                        hoverStar.classList.remove('text-yellow-300');
+                    }
+                }
+            });
+            label.addEventListener('mouseleave', () => {
+                updateStars(currentRating);
+            });
+        });
+
         // Image Upload Functionality
         const imageInput = document.getElementById('image');
         const uploadContainer = document.getElementById('image-upload-container');
@@ -330,107 +408,85 @@
         const fileInfo = document.getElementById('file-info');
         const previewImg = document.getElementById('previewImg');
         const fileName = document.getElementById('file-name');
-        const removeFileBtn = document.getElementById('remove-file');
         const changeImageBtn = document.getElementById('change-image');
-        
-        uploadContainer.addEventListener('click', function(e) {
+        const removeFileBtn = document.getElementById('remove-file');
+
+        uploadContainer.addEventListener('click', (e) => {
             if (e.target === uploadContainer || e.target.closest('#upload-prompt')) {
                 imageInput.click();
             }
         });
-        
-        if (changeImageBtn) {
-            changeImageBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                imageInput.click();
-            });
-        }
-        
-        if (removeFileBtn) {
-            removeFileBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                resetFileInput();
-            });
-        }
-        
-        imageInput.addEventListener('change', function(e) {
+
+        changeImageBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            imageInput.click();
+        });
+
+        removeFileBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            imageInput.value = '';
+            uploadPrompt.classList.remove('hidden');
+            fileInfo.classList.add('hidden');
+            uploadContainer.classList.remove('border-yellow-400', 'bg-yellow-50');
+        });
+
+        imageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
                 if (!file.type.match('image.*')) {
-                    alert('Please select an image file (JPEG, PNG, etc.)');
+                    alert('{{ __("Please select an image file (JPEG, PNG, etc.)") }}');
                     return;
                 }
-                
                 if (file.size > 2 * 1024 * 1024) {
-                    alert('Image size should be less than 2MB');
+                    alert('{{ __("Image size should be less than 2MB") }}');
                     return;
                 }
-                
                 const reader = new FileReader();
-                
-                reader.onload = function(e) {
+                reader.onload = (e) => {
                     previewImg.src = e.target.result;
                     uploadPrompt.classList.add('hidden');
                     fileInfo.classList.remove('hidden');
                     fileName.textContent = file.name;
                     uploadContainer.classList.add('border-yellow-400', 'bg-yellow-50');
                 };
-                
                 reader.readAsDataURL(file);
             }
         });
-        
+
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadContainer.addEventListener(eventName, preventDefaults, false);
+            uploadContainer.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
         });
-        
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        
+
         ['dragenter', 'dragover'].forEach(eventName => {
-            uploadContainer.addEventListener(eventName, highlight, false);
-        });
-        
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadContainer.addEventListener(eventName, unhighlight, false);
-        });
-        
-        function highlight() {
-            uploadContainer.classList.add('border-yellow-400', 'bg-yellow-50');
-        }
-        
-        function unhighlight() {
-            if (!fileInfo.classList.contains('hidden')) {
+            uploadContainer.addEventListener(eventName, () => {
                 uploadContainer.classList.add('border-yellow-400', 'bg-yellow-50');
-            } else {
-                uploadContainer.classList.remove('border-yellow-400', 'bg-yellow-50');
-            }
-        }
-        
-        uploadContainer.addEventListener('drop', handleDrop, false);
-        
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            
-            if (files.length) {
-                imageInput.files = files;
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, () => {
+                if (!fileInfo.classList.contains('hidden')) {
+                    uploadContainer.classList.add('border-yellow-400', 'bg-yellow-50');
+                } else {
+                    uploadContainer.classList.remove('border-yellow-400', 'bg-yellow-50');
+                }
+            });
+        });
+
+        uploadContainer.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.match('image.*')) {
+                imageInput.files = e.dataTransfer.files;
                 const event = new Event('change');
                 imageInput.dispatchEvent(event);
             }
-        }
-        
-        function resetFileInput() {
-            imageInput.value = '';
-            uploadPrompt.classList.remove('hidden');
-            fileInfo.classList.add('hidden');
-            uploadContainer.classList.remove('border-yellow-400', 'bg-yellow-50');
-        }
-        
+        });
+
         @if(old('rating'))
-            updateStarRating({{ old('rating') }});
+            updateStars({{ old('rating') }});
         @endif
     });
 </script>

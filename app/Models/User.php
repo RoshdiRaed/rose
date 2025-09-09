@@ -22,6 +22,9 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'verification_code',
+        'verification_code_sent_at',
+        'is_verified'
     ];
 
     /**
@@ -35,6 +38,17 @@ class User extends Authenticatable
     ];
 
     /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\CustomResetPassword($token));
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -45,6 +59,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'is_verified' => 'boolean',
+            'verification_code_sent_at' => 'datetime',
         ];
     }
 }

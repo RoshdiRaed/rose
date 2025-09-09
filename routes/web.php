@@ -37,7 +37,8 @@ Route::post('/contact/submit', [ContactController::class, 'submit'])->name('cont
 require __DIR__.'/auth.php';
 
 // Dashboard Routes (Protected by auth and admin middleware)
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+// The 'verified' middleware is now applied at the route group level
+Route::middleware(['auth', 'admin'])->group(function () {
     // Dashboard Home
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

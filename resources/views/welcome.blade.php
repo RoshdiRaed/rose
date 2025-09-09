@@ -83,18 +83,44 @@
     </section>
 
     <!-- About Section -->
-    <section class="py-24 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-            @php $about = \App\Models\About::first(); @endphp
-            <img src="{{ $about && $about->image ? asset('storage/' . $about->image) : asset('img/about.png') }}" 
-                 alt="{{ $about ? $about->{"title_" . app()->getLocale()} : 'Company Logo' }}" 
-                 class="rounded-xl shadow-lg w-full h-auto max-h-96 object-cover" 
-                 data-aos="fade-right"
-                 data-aos-delay="100">
-            <div data-aos="fade-left" data-aos-delay="200">
-                <h2 class="text-4xl font-bold mb-6 text-gray-800">
-                    {{ $about ? $about->{"title_" . app()->getLocale()} : (app()->getLocale() === 'ar' ? 'من نحن' : 'About Us') }}
-                </h2>
+    <section class="py-24 bg-gradient-to-b from-white to-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <!-- Image with Decorative Elements -->
+                <div class="relative" data-aos="fade-right">
+                    <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
+                        @php $about = \App\Models\About::first(); @endphp
+                        <img 
+                            src="{{ $about && $about->image ? asset('storage/' . $about->image) : asset('img/about.png') }}" 
+                            alt="{{ $about ? $about->{"title_" . app()->getLocale()} : 'Company Logo' }}" 
+                            class="w-full h-auto object-cover transition-transform duration-700 hover:scale-105"
+                        >
+                        <!-- Decorative Elements -->
+                        <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+                        <div class="absolute -top-6 -right-6 w-32 h-32 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+                    </div>
+                    
+                    <!-- Experience Badge -->
+                    <div class="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-lg p-6 text-center z-20" data-aos="fade-up" data-aos-delay="300">
+                        <div class="text-4xl font-bold text-yellow-500">15+</div>
+                        <div class="text-sm font-medium text-gray-600">{{ app()->getLocale() === 'ar' ? 'سنة خبرة' : 'Years Experience' }}</div>
+                    </div>
+                </div>
+                
+                <!-- Content -->
+                <div data-aos="fade-left" data-aos-delay="100">
+                    <!-- Section Title -->
+                    <div class="inline-flex items-center px-4 py-2 rounded-full bg-yellow-50 text-yellow-600 text-sm font-medium mb-6">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h2a1 1 0 100-2h-2V9z" clip-rule="evenodd" />
+                        </svg>
+                        {{ app()->getLocale() === 'ar' ? 'من نحن' : 'About Us' }}
+                    </div>
+                    
+                    <!-- Main Heading -->
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-900 leading-tight">
+                        {{ $about ? $about->{"title_" . app()->getLocale()} : (app()->getLocale() === 'ar' ? 'شركة رائدة في مجال الأمن والسلامة' : 'Leading Security & Safety Company') }}
+                    </h2>
                 @if($about)
                     <div class="prose max-w-none text-gray-600 mb-6 leading-relaxed">
                         {!! nl2br(e($about->{"description_" . app()->getLocale()})) !!}
@@ -107,72 +133,106 @@
                     </p>
                 @endif
                 
-                <div class="space-y-4">
+                <!-- Features List -->
+                <div class="space-y-6 mb-10">
                     @if($about && $about->features)
                         @foreach($about->features as $feature)
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 mt-1">
-                                    <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
+                            <div class="flex items-start group">
+                                <div class="flex-shrink-0 mt-1 mr-4">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-50 text-yellow-500 group-hover:bg-yellow-100 transition-colors duration-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
                                 </div>
-                                <p class="ml-3 text-gray-600">
-                                    {{ $feature["feature_" . app()->getLocale()] }}
-                                </p>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-900 mb-1">{{ $feature["feature_" . app()->getLocale()] }}</h4>
+                                    <p class="text-gray-600 text-sm">{{ $feature["description_" . app()->getLocale()] ?? '' }}</p>
+                                </div>
                             </div>
                         @endforeach
                     @else
-                        <!-- Default features if no about data -->
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                        <!-- Default Features -->
+                        <div class="flex items-start group">
+                            <div class="flex-shrink-0 mt-1 mr-4">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-50 text-yellow-500 group-hover:bg-yellow-100 transition-colors duration-300">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
                             </div>
-                            <p class="ml-3 text-gray-600">
-                                {{ app()->getLocale() === 'ar' 
-                                    ? 'فريق محترف من ذوي الخبرة والكفاءة العالية' 
-                                    : 'Professional team with high experience and efficiency' }}
-                            </p>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-1">
+                                    {{ app()->getLocale() === 'ar' ? 'فريق محترف' : 'Professional Team' }}
+                                </h4>
+                                <p class="text-gray-600 text-sm">
+                                    {{ app()->getLocale() === 'ar' 
+                                        ? 'خبراء أمنيون مدربون بأعلى المعايير الدولية'
+                                        : 'Security experts trained to the highest international standards' }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                        <div class="flex items-start group">
+                            <div class="flex-shrink-0 mt-1 mr-4">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50 text-blue-500 group-hover:bg-blue-100 transition-colors duration-300">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
                             </div>
-                            <p class="ml-3 text-gray-600">
-                                {{ app()->getLocale() === 'ar' 
-                                    ? 'أحدث التقنيات والمعدات المتطورة' 
-                                    : 'Latest technologies and advanced equipment' }}
-                            </p>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-1">
+                                    {{ app()->getLocale() === 'ar' ? 'تكنولوجيا متطورة' : 'Advanced Technology' }}
+                                </h4>
+                                <p class="text-gray-600 text-sm">
+                                    {{ app()->getLocale() === 'ar' 
+                                        ? 'أحدث الأنظمة والتقنيات في مجال المراقبة والأمن'
+                                        : 'Latest surveillance and security systems technology' }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                        <div class="flex items-start group">
+                            <div class="flex-shrink-0 mt-1 mr-4">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-green-50 text-green-500 group-hover:bg-green-100 transition-colors duration-300">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </div>
                             </div>
-                            <p class="ml-3 text-gray-600">
-                                {{ app()->getLocale() === 'ar' 
-                                    ? 'خدمات مخصصة تلبي احتياجاتك الأمنية' 
-                                    : 'Customized services that meet your security needs' }}
-                            </p>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-1">
+                                    {{ app()->getLocale() === 'ar' ? 'حلول مخصصة' : 'Custom Solutions' }}
+                                </h4>
+                                <p class="text-gray-600 text-sm">
+                                    {{ app()->getLocale() === 'ar' 
+                                        ? 'تصميم حلول أمنية تلبي احتياجاتك الخاصة'
+                                        : 'Tailored security solutions for your specific needs' }}
+                                </p>
+                            </div>
                         </div>
                     @endif
                 </div>
                 
-                @if($about && $about->cta_link)
-                    <a href="{{ $about->cta_link }}"
-                        class="mt-8 inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-full transition duration-300 transform hover:scale-105">
-                        {{ $about->{"cta_text_" . app()->getLocale()} }}
-                    </a>
-                @else
-                    <a href="{{ route('about') }}"
-                        class="mt-8 inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-8 py-3 rounded-full transition duration-300 transform hover:scale-105">
-                        {{ app()->getLocale() === 'ar' ? 'اقرأ المزيد' : 'Read More' }}
-                    </a>
-                @endif
+                <!-- CTA Button -->
+                <div class="mt-10">
+                    @if($about && $about->cta_link)
+                        <a href="{{ $about->cta_link }}" 
+                           class="btn-primary group relative inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-amber-500 hover:to-yellow-400 text-gray-900 font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20">
+                            <span>{{ $about->{"cta_text_" . app()->getLocale()} }}</span>
+                            <svg class="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </a>
+                    @else
+                        <a href="{{ route('about') }}" 
+                           class="btn-primary group relative inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-amber-500 hover:to-yellow-400 text-gray-900 font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20">
+                            <span>{{ app()->getLocale() === 'ar' ? 'اقرأ المزيد' : 'Read More' }}</span>
+                            <svg class="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </a>
+                    @endif
+                </div>
             </div>
         </div>
     </section>
@@ -188,27 +248,49 @@
             </p>
             <div class="grid md:grid-cols-3 gap-8">
                 @foreach (\App\Models\Testimonial::all() as $testimonial)
-                    <div class="bg-white p-8 rounded-xl shadow-lg card-hover" data-aos="fade-up"
+                    <div class="bg-white p-8 rounded-xl shadow-lg card-hover flex flex-col h-full" data-aos="fade-up"
                         data-aos-delay="{{ $loop->index * 200 }}">
+                        <!-- Profile Image -->
+                        @if($testimonial->image_url)
+                            <div class="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden border-4 border-yellow-100">
+                                <img src="{{ $testimonial->image_url }}" 
+                                     alt="{{ app()->getLocale() === 'ar' ? $testimonial->name_ar : $testimonial->name_en }}"
+                                     class="w-full h-full object-cover">
+                            </div>
+                        @else
+                            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gray-200 flex items-center justify-center">
+                                <svg class="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                            </div>
+                        @endif
+
+                        <!-- Rating -->
                         <div class="flex justify-center mb-4">
-                            @for ($i = 0; $i < $testimonial->rating; $i++)
-                                <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3 .921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784 .57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81 .588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
-                                    </path>
+                            @for ($i = 1; $i <= 5; $i++)
+                                <svg class="w-5 h-5 {{ $i <= $testimonial->rating ? 'text-yellow-400' : 'text-gray-300' }}" 
+                                     fill="currentColor" 
+                                     viewBox="0 0 20 20"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3 .921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784 .57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81 .588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                                 </svg>
                             @endfor
                         </div>
-                        <p class="text-gray-600 italic mb-4">
-                            {{ app()->getLocale() === 'ar' ? $testimonial->content_ar : $testimonial->content_en }}
+
+                        <!-- Testimonial Content -->
+                        <p class="text-gray-600 italic mb-6 flex-grow">
+                            "{{ app()->getLocale() === 'ar' ? $testimonial->content_ar : $testimonial->content_en }}"
                         </p>
-                        <h4 class="text-lg font-semibold text-gray-800">
-                            {{ app()->getLocale() === 'ar' ? $testimonial->name_ar : $testimonial->name_en }}
-                        </h4>
-                        <p class="text-gray-500 text-sm">
-                            {{ app()->getLocale() === 'ar' ? $testimonial->position_ar : $testimonial->position_en }}
-                        </p>
+
+                        <!-- Client Info -->
+                        <div class="mt-auto">
+                            <h4 class="text-lg font-semibold text-gray-800">
+                                {{ app()->getLocale() === 'ar' ? $testimonial->name_ar : $testimonial->name_en }}
+                            </h4>
+                            <p class="text-gray-500 text-sm">
+                                {{ app()->getLocale() === 'ar' ? $testimonial->position_ar : $testimonial->position_en }}
+                            </p>
+                        </div>
                     </div>
                 @endforeach
             </div>
