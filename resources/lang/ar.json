@@ -1,4 +1,29 @@
 {
+    "dashboard": {
+        "title": "لوحة التحكم",
+        "nav": {
+            "dashboard": "لوحة التحكم",
+            "services": "الخدمات",
+            "portfolio": "الأعمال السابقة",
+            "testimonials": "آراء العملاء",
+            "profile": "الملف الشخصي",
+            "logout": "تسجيل الخروج",
+            "switch_language": "تغيير اللغة",
+            "language_menu": "قائمة اللغة",
+            "user_menu": "قائمة المستخدم",
+            "toggle_menu": "تبديل القائمة"
+        },
+        "footer": "جميع الحقوق محفوظة"
+    },
+    "nav": {
+        "dashboard": "لوحة التحكم",
+        "services": "الخدمات",
+        "portfolio": "الأعمال السابقة",
+        "testimonials": "آراء العملاء",
+        "main_navigation": "القائمة الرئيسية",
+        "change_language": "تغيير اللغة"
+    },
+    
     "Contact Form Submissions": "طلبات التواصل",
     "Breadcrumb": "مسار التنقل",
     "Home": "الرئيسية",
@@ -21,6 +46,18 @@
     "Reply": "الرد",
     "Delete": "حذف",
     "Close": "إغلاق",
+    "Profile Settings": "إعدادات الملف الشخصي",
+    "Profile Information": "معلومات الملف الشخصي",
+    "Update your account's profile information and email address.": "تحديث معلومات الملف الشخصي وعنوان البريد الإلكتروني الخاص بحسابك.",
+    "Update Password": "تحديث كلمة المرور",
+    "Ensure your account is using a long, random password to stay secure.": "تأكد من أن حسابك يستخدم كلمة مرور طويلة وعشوائية لضمان الأمان.",
+    "Current Password": "كلمة المرور الحالية",
+    "New Password": "كلمة المرور الجديدة",
+    "Confirm Password": "تأكيد كلمة المرور",
+    "Save": "حفظ",
+    "Saved.": "تم الحفظ.",
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائيًا. قبل حذف حسابك، يرجى تنزيل أي بيانات أو معلومات ترغب في الاحتفاظ بها.",
+    "Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "هل أنت متأكد أنك تريد حذف حسابك؟ بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائيًا. يرجى إدخال كلمة المرور الخاصة بك لتأكيد رغبتك في حذف حسابك نهائيًا.",
     "Message from :name": "رسالة من :name",
     "Delete Submission": "حذف الطلب",
     "Are you sure you want to delete this submission? This action cannot be undone.": "هل أنت متأكد أنك تريد حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
@@ -128,4 +165,5 @@
     "Toggle mobile menu": "تبديل قائمة الهاتف المحمول",
     "Close mobile menu": "إغلاق قائمة الهاتف المحمول",
     "Mobile navigation menu": "قائمة التنقل عبر الهاتف المحمول"
+
 }

@@ -142,16 +142,9 @@
             padding-left: 2rem;
         }
 
-        /* Name column avatar positioning for RTL */
-        [dir="rtl"] .name-column-container {
-            display: flex;
-            flex-direction: row-reverse;
-            align-items: center;
-        }
-
-        [dir="rtl"] .name-column-container .avatar {
-            margin-left: 1rem;
-            margin-right: 0;
+        /* RTL text alignment */
+        [dir="rtl"] .text-right {
+            text-align: right;
         }
     </style>
 @endpush
@@ -376,19 +369,13 @@
                                 <tr id="submission-{{ $submission->id }}"
                                     class="hover:bg-gray-50 {{ $submission->status === 'new' ? 'bg-blue-50' : '' }}">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div
-                                            class="name-column-container flex items-center {{ app()->getLocale() === 'ar' ? 'flex-row-reverse' : '' }}">
-                                            <div
-                                                class="flex-shrink-0 h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center avatar {{ app()->getLocale() === 'ar' ? 'ml-4' : 'mr-4' }}">
-                                                <span
-                                                    class="text-yellow-600 font-medium">{{ strtoupper(substr($submission->name, 0, 1)) }}</span>
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                                <span class="text-yellow-600 font-medium">{{ strtoupper(substr($submission->name, 0, 1)) }}</span>
                                             </div>
-                                            <div>
+                                            <div class="{{ app()->getLocale() === 'ar' ? 'mr-3 text-right' : 'ml-3' }}">
                                                 <div class="text-sm font-medium text-gray-900">
                                                     {{ $submission->name }}
-                                                </div>
-                                                <div class="text-sm text-gray-500">
-                                                    {{ $submission->subject ?? __('No Subject') }}
                                                 </div>
                                             </div>
                                         </div>

@@ -1,0 +1,26 @@
+{
+    "dashboard": {
+        "title": "Dashboard",
+        "nav": {
+            "dashboard": "Dashboard",
+            "services": "Services",
+            "portfolio": "Portfolio",
+            "testimonials": "Testimonials",
+            "profile": "Profile",
+            "logout": "Log Out",
+            "switch_language": "Switch Language",
+            "language_menu": "Language Menu",
+            "user_menu": "User Menu",
+            "toggle_menu": "Toggle Menu"
+        },
+        "footer": "All rights reserved"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "services": "Services",
+        "portfolio": "Portfolio",
+        "testimonials": "Testimonials",
+        "main_navigation": "Main Navigation",
+        "change_language": "Change Language"
+    }
+}

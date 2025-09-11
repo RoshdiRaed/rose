@@ -519,6 +519,7 @@ class DashboardController extends Controller
             Storage::disk('public')->delete($testimonial->image);
         }
         $testimonial->delete();
-        return back()->with('success', 'Testimonial deleted successfully');
+        return redirect()->route('dashboard.testimonials.index')
+                         ->with('success', __('Testimonial deleted successfully'));
     }
 }
