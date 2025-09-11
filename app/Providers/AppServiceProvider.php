@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,49 +25,45 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Set the application locale based on the following priority:
-        // 1. URL parameter (for testing)
-        // 2. Session (current session)
-        // 3. Cookie (persists across sessions)
-        // 4. Default from config
+        // 1. Session (current session)
+        // 2. Cookie (persists across sessions)
+        // 3. Default from config
         
+        $validLocales = ['en', 'ar'];
         $locale = null;
         
-        // Check URL parameter first (for testing)
-        if (Request::has('lang') && in_array(Request::get('lang'), ['en', 'ar'])) {
-            $locale = Request::get('lang');
-            Session::put('locale', $locale);
-            Cookie::queue('locale', $locale, 60 * 24 * 365); // 1 year
-        }
-        // Then check session
-        elseif (Session::has('locale')) {
+        // First check session
+        if (Session::has('locale') && in_array(Session::get('locale'), $validLocales)) {
             $locale = Session::get('locale');
         }
         // Then check cookie
-        elseif (Request::hasCookie('locale')) {
+        elseif (Request::hasCookie('locale') && in_array(Request::cookie('locale'), $validLocales)) {
             $locale = Request::cookie('locale');
             // Update session from cookie
             Session::put('locale', $locale);
         }
         
-        // Set the locale if valid, otherwise fallback to config
-        if ($locale && in_array($locale, ['en', 'ar'])) {
-            // Set the application locale
-            App::setLocale($locale);
-            
-            // Set the application direction based on locale
-            config(['app.direction' => $locale === 'ar' ? 'rtl' : 'ltr']);
-            
-            // Update session and cookie if needed
-            if (Session::get('locale') !== $locale) {
-                Session::put('locale', $locale);
-            }
-            
-            if (Request::cookie('locale') !== $locale) {
-                Cookie::queue('locale', $locale, 60 * 24 * 365); // 1 year
-            }
-        } else {
-            // Fallback to config
-            App::setLocale(config('app.locale'));
+        // If no valid locale found, use the default from config
+        if (!$locale || !in_array($locale, $validLocales)) {
+            $locale = config('app.locale', 'en');
+            Session::put('locale', $locale);
+        }
+        
+        // Set the application locale
+        $this->app->setLocale($locale);
+        
+        // Force set the locale for the current request
+        if (function_exists('app')) {
+            app()->setLocale($locale);
+        }
+        
+        // Set the application direction based on locale
+        $direction = $locale === 'ar' ? 'rtl' : 'ltr';
+        config(['app.direction' => $direction]);
+        
+        // Update cookie if needed
+        if (Request::cookie('locale') !== $locale) {
+            Cookie::queue('locale', $locale, 60 * 24 * 365); // 1 year
         }
     }
 }

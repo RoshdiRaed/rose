@@ -4,7 +4,9 @@
 
 @section('content')
     <!-- Hero Section (Static) -->
-    <section class="h-96 bg-cover bg-center flex items-center justify-center text-center bg-gradient-to-r from-indigo-900 to-gray-900" data-aos="zoom-out">
+    <section
+        class="h-96 bg-cover bg-center flex items-center justify-center text-center bg-gradient-to-r from-indigo-900 to-gray-900"
+        data-aos="zoom-out">
         <div class="max-w-4xl px-6 text-white">
             <h1 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
                 {{ app()->getLocale() === 'ar' ? 'خدمات الأمن الشاملة' : 'Comprehensive Security Services' }}
@@ -27,11 +29,14 @@
                 </p>
             </div>
             <div class="grid md:grid-cols-2 gap-12">
-                @foreach(\App\Models\Service::all() as $service)
-                    <div class="bg-gray-50 p-8 rounded-xl shadow-lg card-hover flex items-start space-x-6 space-x-reverse" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
-                        @if($service->icon)
-                            <svg class="w-12 h-12 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $service->icon }}"></path>
+                @foreach (\App\Models\Service::all() as $service)
+                    <div class="bg-gray-50 p-8 rounded-xl shadow-lg card-hover flex items-start space-x-6 space-x-reverse"
+                        data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                        @if ($service->icon)
+                            <svg class="w-12 h-12 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="{{ $service->icon }}"></path>
                             </svg>
                         @endif
                         <div>

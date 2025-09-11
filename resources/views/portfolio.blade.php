@@ -3,8 +3,45 @@
 @section('title', app()->getLocale() === 'ar' ? 'رويال سيكيوريتي | أعمالنا' : 'Royal Security | Our Work')
 
 @section('content')
+    <style>
+        .project-description {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .read-more-btn {
+            color: #f6ad55;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .read-more-btn:hover {
+            color: #ed8936;
+        }
+    </style>
+
+    <script>
+        function toggleReadMore(button) {
+            const content = button.previousElementSibling;
+            const isExpanded = content.classList.toggle('line-clamp-3');
+            button.textContent = isExpanded ?
+                (document.documentElement.lang === 'ar' ? 'قراءة المزيد' : 'Read More') :
+                (document.documentElement.lang === 'ar' ? 'عرض أقل' : 'Show Less');
+        }
+    </script>
     <!-- Hero Section (Static) -->
-    <section class="h-96 bg-cover bg-center flex items-center justify-center text-center bg-gradient-to-r from-indigo-900 to-gray-900" data-aos="zoom-out">
+    <section
+        class="h-96 bg-cover bg-center flex items-center justify-center text-center bg-gradient-to-r from-indigo-900 to-gray-900"
+        data-aos="zoom-out">
         <div class="max-w-4xl px-6 text-white">
             <h1 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
                 {{ app()->getLocale() === 'ar' ? 'أعمالنا' : 'Our Work' }}
@@ -27,18 +64,36 @@
                 </p>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
-                @foreach(\App\Models\Portfolio::all() as $project)
-                    <div class="bg-gray-50 p-8 rounded-xl shadow-lg card-hover flex flex-col items-start" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
-                        <img src="{{ asset('storage/' . $project->image) }}" alt="{{ app()->getLocale() === 'ar' ? $project->title_ar : $project->title_en }}" class="w-full h-40 object-cover rounded-t-xl mb-4">
+                @foreach (\App\Models\Portfolio::all() as $project)
+                    <div class="bg-gray-50 p-8 rounded-xl shadow-lg card-hover flex flex-col h-full" data-aos="fade-up"
+                        data-aos-delay="{{ $loop->index * 100 }}">
+                        <img src="{{ asset('storage/' . $project->image) }}"
+                            alt="{{ app()->getLocale() === 'ar' ? $project->title_ar : $project->title_en }}"
+                            class="w-full h-40 object-cover rounded-t-xl mb-4">
                         <h3 class="text-2xl font-semibold mb-3 text-gray-800">
                             {{ app()->getLocale() === 'ar' ? $project->title_ar : $project->title_en }}
                         </h3>
-                        <p class="text-gray-600 mb-4">
-                            {{ app()->getLocale() === 'ar' ? $project->description_ar : $project->description_en }}
-                        </p>
-                        <a href="{{ route('contact') }}" class="text-yellow-400 hover:text-yellow-500 font-medium">
-                            {{ app()->getLocale() === 'ar' ? 'تعرف على المزيد' : 'Learn More' }}
-                        </a>
+                        <div class="project-description">
+                            @php
+                                $description =
+                                    app()->getLocale() === 'ar' ? $project->description_ar : $project->description_en;
+                                $descriptionLength = mb_strlen($description);
+                                $showReadMore = $descriptionLength > 150;
+                            @endphp
+                            <div class="project-content {{ $showReadMore ? 'line-clamp-3' : '' }}">
+                                {!! nl2br(e($description)) !!}
+                            </div>
+                            @if ($showReadMore)
+                                <button type="button" class="read-more-btn mt-2" onclick="toggleReadMore(this)">
+                                    {{ app()->getLocale() === 'ar' ? 'قراءة المزيد' : 'Read More' }}
+                                </button>
+                            @endif
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <a href="{{ route('contact') }}" class="text-yellow-400 hover:text-yellow-500 font-medium">
+                                {{ app()->getLocale() === 'ar' ? 'تعرف على المزيد' : 'Learn More' }}
+                            </a>
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -55,7 +110,7 @@
                 {{ app()->getLocale() === 'ar' ? 'تواصلوا معنا اليوم لاستكشاف كيف يمكن لخبرتنا حماية مشروعكم القادم.' : 'Contact us today to explore how our expertise can safeguard your next project.' }}
             </p>
             <a href="{{ route('contact') }}"
-               class="btn-primary inline-block bg-yellow-400 text-gray-900 px-8 py-4 rounded-full font-semibold hover:bg-yellow-500">
+                class="btn-primary inline-block bg-yellow-400 text-gray-900 px-8 py-4 rounded-full font-semibold hover:bg-yellow-500">
                 {{ app()->getLocale() === 'ar' ? 'ابدأ الآن' : 'Get Started' }}
             </a>
         </div>

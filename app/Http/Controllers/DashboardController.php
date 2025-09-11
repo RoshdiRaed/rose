@@ -26,39 +26,91 @@ class DashboardController extends Controller
         return response()->json($submission);
     }
     
-    public function contactSubmissions()
+    public function contactSubmissions(Request $request)
     {
-        $submissions = ContactSubmission::latest()->paginate(10);
+        $status = $request->query('status', 'all');
         
-        // Get counts for each status
-        $totalSubmissions = ContactSubmission::count();
-        $newCount = ContactSubmission::where('status', 'new')->count();
-        $readCount = ContactSubmission::where('status', 'read')->count();
-        $archivedCount = ContactSubmission::where('status', 'archived')->count();
+        // Get counts first - this ensures consistent counts across all statuses
+        $counts = [
+            'totalSubmissions' => ContactSubmission::count(),
+            'newCount' => ContactSubmission::where('status', 'new')
+                ->where('created_at', '>=', now()->subDay())
+                ->count(),
+            'readCount' => ContactSubmission::where('status', 'read')->count(),
+            'archivedCount' => ContactSubmission::where('status', 'archived')->count()
+        ];
         
-        return view('dashboard.contacts.index', [
+        // Base query for submissions
+        $query = ContactSubmission::query();
+        
+        // Apply status filter if not 'all'
+        if ($status === 'new') {
+            // Only show messages from the last 24 hours for 'new' status
+            $query->where('status', 'new')
+                  ->where('created_at', '>=', now()->subDay());
+        } elseif ($status === 'read') {
+            $query->where('status', 'read');
+        } elseif ($status === 'archived') {
+            $query->where('status', 'archived');
+        }
+        
+        $submissions = $query->latest()->paginate(10);
+        
+        // Prepare response data
+        $responseData = array_merge([
             'submissions' => $submissions,
-            'totalSubmissions' => $totalSubmissions,
-            'newCount' => $newCount,
-            'readCount' => $readCount,
-            'archivedCount' => $archivedCount
-        ]);
+            'currentStatus' => $status
+        ], $counts);
+        
+        // Return JSON for AJAX requests
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json($responseData);
+        }
+        
+        // Return view for regular requests
+        return view('dashboard.contacts.index', $responseData);
     }
     
     public function markAsRead($id)
     {
-        $submission = ContactSubmission::findOrFail($id);
-        $submission->update(['status' => 'read']);
-        
-        return response()->json(['success' => true]);
+        try {
+            $submission = ContactSubmission::findOrFail($id);
+            $submission->update([
+                'status' => 'read',
+                'read_at' => now()
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'redirect' => url()->previous()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error marking as read: ' . $e->getMessage()
+            ], 500);
+        }
     }
     
     public function archive($id)
     {
-        $submission = ContactSubmission::findOrFail($id);
-        $submission->update(['status' => 'archived']);
-        
-        return response()->json(['success' => true]);
+        try {
+            $submission = ContactSubmission::findOrFail($id);
+            $submission->update([
+                'status' => 'archived',
+                'archived_at' => now()
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'redirect' => url()->previous()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error archiving: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function deleteContactSubmission($id)

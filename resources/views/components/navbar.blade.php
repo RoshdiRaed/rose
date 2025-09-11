@@ -1,5 +1,5 @@
-<nav class="fixed top-0 left-0 w-full bg-gray-900/90 backdrop-blur-md shadow-md z-50">
-    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+<nav class="fixed top-0 left-0 w-full bg-gray-900/90 backdrop-blur-md shadow-md z-50" dir="{{ config('app.direction', 'ltr') }}">
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16" dir="{{ config('app.direction', 'ltr') }}">
         <!-- Logo -->
         <a href="/" class="flex items-center gap-2">
             <img src="/img/logo.png" alt="logo" class="w-8 h-8 rounded">
@@ -26,12 +26,9 @@
 
         <!-- Right side -->
         <div class="flex items-center gap-4">
-            <form action="{{ route('language.switch', app()->getLocale() === 'en' ? 'ar' : 'en') }}" method="GET" class="inline">
-                @csrf
-                <button type="submit" class="px-3 py-1 rounded-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900 transition focus:outline-none">
-                    {{ app()->getLocale() === 'en' ? 'العربية' : 'English' }}
-                </button>
-            </form>
+            <a href="{{ route('language.switch', app()->getLocale() === 'en' ? 'ar' : 'en') }}" class="px-3 py-1 rounded-full border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900 transition focus:outline-none">
+                {{ app()->isLocale('en') ? 'العربية' : 'English' }}
+            </a>
 
             <!-- Hamburger (Mobile only) -->
             <button id="menu-btn" class="md:hidden flex flex-col gap-1.5">
@@ -44,7 +41,7 @@
 
     <!-- Mobile Menu -->
     <div id="mobile-menu"
-        class="fixed top-0 {{ app()->getLocale() === 'ar' ? 'left-0' : 'right-0' }} w-64 h-full bg-gray-800 transform {{ app()->getLocale() === 'ar' ? '-translate-x-full' : 'translate-x-full' }} transition-transform duration-300 z-40 md:hidden">
+        class="fixed top-0 {{ config('app.direction') === 'rtl' ? 'right-0' : 'left-0' }} w-64 h-full bg-gray-800 transform {{ config('app.direction') === 'rtl' ? 'translate-x-full' : '-translate-x-full' }} transition-transform duration-300 z-40 md:hidden" dir="{{ config('app.direction', 'ltr') }}">
         <div class="p-6 flex flex-col gap-6">
             <!-- Close button -->
             <button id="close-menu" class="self-end text-yellow-400 hover:text-yellow-600">
@@ -68,7 +65,7 @@
 
             <a href="{{ route('language.switch', app()->getLocale() === 'en' ? 'ar' : 'en') }}"
                 class="px-3 py-2 rounded-lg border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900 transition w-full text-center block">
-                {{ app()->getLocale() === 'en' ? 'العربية' : 'English' }}
+                {{ app()->isLocale('en') ? 'العربية' : 'English' }}
             </a>
         </div>
     </div>
@@ -87,24 +84,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openMobileMenu() {
         if (isRTL) {
-            mobileMenu.classList.remove("-translate-x-full");
-        } else {
             mobileMenu.classList.remove("translate-x-full");
+        } else {
+            mobileMenu.classList.remove("-translate-x-full");
         }
         mobileOverlay.classList.remove("hidden");
+        document.body.style.overflow = 'hidden';
     }
 
     function closeMobileMenu() {
         if (isRTL) {
-            mobileMenu.classList.add("-translate-x-full");
-        } else {
             mobileMenu.classList.add("translate-x-full");
+        } else {
+            mobileMenu.classList.add("-translate-x-full");
         }
         mobileOverlay.classList.add("hidden");
+        document.body.style.overflow = '';
     }
 
+    // Event Listeners
     menuBtn.addEventListener("click", openMobileMenu);
     closeMenu.addEventListener("click", closeMobileMenu);
     mobileOverlay.addEventListener("click", closeMobileMenu);
+
+    // Close menu when clicking on a nav link
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+
+    // Close menu when pressing Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+            closeMobileMenu();
+        }
+    });
 });
 </script>

@@ -9,8 +9,22 @@ use App\Http\Controllers\WelcomePageController;
 use Illuminate\Support\Facades\Route;
 
 // Language Switch Route
-Route::get('language/{lang}', [\App\Http\Controllers\LanguageController::class, 'switchLang'])
-    ->name('language.switch');
+Route::middleware(['web'])->group(function () {
+    Route::get('language/{lang}', [\App\Http\Controllers\LanguageController::class, 'switchLang'])
+        ->name('language.switch');
+    
+    // Test route to check current language and session
+    Route::get('test-lang', function () {
+        return [
+            'current_locale' => app()->getLocale(),
+            'session_locale' => session('locale'),
+            'app_locale' => config('app.locale'),
+            'app_direction' => config('app.direction'),
+            'cookies' => request()->cookies->all(),
+            'session' => session()->all(),
+        ];
+    });
+});
 
 // Public Routes
 Route::get('/', function () {
