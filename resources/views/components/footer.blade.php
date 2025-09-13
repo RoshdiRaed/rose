@@ -35,7 +35,7 @@
                 {{ app()->getLocale() === 'ar' ? 'قطاع غزة' : 'Gaza Strip' }}
             </p>
             <p class="text-gray-400">Phone: <a href="tel:+970-59-999999" class="hover:text-yellow-400">059999999</a></p>
-            <p class="text-gray-400">Email: <a href="mailto:info@royalsecurity.ps" class="hover:text-yellow-400">info@royalsecurity.ps</a></p>
+            <p class="text-gray-400">Email: <a href="mailto:info@royalsecurity.io" class="hover:text-yellow-400">info@royalsecurity.io</a></p>
         </div>
         <!-- Follow Us -->
         <div>

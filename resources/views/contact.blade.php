@@ -120,9 +120,9 @@
                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
                                 </path>
                             </svg>
-                            <a href="mailto:{{ $contactInfo ? $contactInfo->email : 'info@royalsecurity.ps' }}"
+                            <a href="mailto:{{ $contactInfo ? $contactInfo->email : 'info@royalsecurity.io' }}"
                                 class="hover:text-yellow-400">
-                                {{ $contactInfo ? $contactInfo->email : 'info@royalsecurity.ps' }}
+                                {{ $contactInfo ? $contactInfo->email : 'info@royalsecurity.io' }}
                             </a>
                         </li>
                     </ul>
