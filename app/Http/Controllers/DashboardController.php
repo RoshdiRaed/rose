@@ -118,8 +118,9 @@ class DashboardController extends Controller
         $submission = \App\Models\ContactSubmission::findOrFail($id);
         $submission->delete();
         
+        $message = app()->getLocale() === 'ar' ? 'تم حذف التواصل بنجاح' : 'Contact submission deleted successfully';
         return redirect()->route('contact-submissions')
-            ->with('success', 'Contact submission deleted successfully');
+            ->with('success', $message);
     }
 
     // Dashboard home
@@ -157,14 +158,14 @@ class DashboardController extends Controller
                 'icon' => 'required|string|max:1000',
             ],
             [
-                'title_en.required' => 'The English title field is required.',
+                'title_en.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالإنجليزية مطلوب' : 'The English title field is required.',
                 'title_en.max' => 'The English title may not be greater than 255 characters.',
-                'title_ar.required' => 'The Arabic title field is required.',
-                'title_ar.max' => 'The Arabic title may not be greater than 255 characters.',
-                'description_en.required' => 'The English description field is required.',
-                'description_ar.required' => 'The Arabic description field is required.',
-                'icon.required' => 'The icon field is required.',
-                'icon.max' => 'The icon name may not be greater than 1000 characters.',
+                'title_ar.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالعربية مطلوب' : 'The Arabic title field is required.',
+                'title_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز العنوان بالعربية 255 حرفًا' : 'The Arabic title may not be greater than 255 characters.',
+                'description_en.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالإنجليزية مطلوب' : 'The English description field is required.',
+                'description_ar.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالعربية مطلوب' : 'The Arabic description field is required.',
+                'icon.required' => app()->getLocale() === 'ar' ? 'حقل الأيقونة مطلوب' : 'The icon field is required.',
+                'icon.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز اسم الأيقونة 1000 حرفًا' : 'The icon name may not be greater than 1000 characters.',
             ]
         );
 
@@ -189,26 +190,28 @@ class DashboardController extends Controller
                 'icon' => 'required|string|max:1000',
             ],
             [
-                'title_en.required' => 'The English title field is required.',
-                'title_en.max' => 'The English title may not be greater than 255 characters.',
-                'title_ar.required' => 'The Arabic title field is required.',
-                'title_ar.max' => 'The Arabic title may not be greater than 255 characters.',
-                'description_en.required' => 'The English description field is required.',
-                'description_ar.required' => 'The Arabic description field is required.',
-                'icon.required' => 'The icon field is required.',
-                'icon.max' => 'The icon name may not be greater than 1000 characters.',
+                'title_en.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالإنجليزية مطلوب' : 'The English title field is required.',
+                'title_en.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز العنوان بالإنجليزية 255 حرفًا' : 'The English title may not be greater than 255 characters.',
+                'title_ar.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالعربية مطلوب' : 'The Arabic title field is required.',
+                'title_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز العنوان بالعربية 255 حرفًا' : 'The Arabic title may not be greater than 255 characters.',
+                'description_en.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالإنجليزية مطلوب' : 'The English description field is required.',
+                'description_ar.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالعربية مطلوب' : 'The Arabic description field is required.',
+                'icon.required' => app()->getLocale() === 'ar' ? 'حقل الأيقونة مطلوب' : 'The icon field is required.',
+                'icon.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز اسم الأيقونة 1000 حرفًا' : 'The icon name may not be greater than 1000 characters.',
             ]
         );
 
         $service->update($validated);
+        $message = app()->getLocale() === 'ar' ? 'تم تحديث الخدمة بنجاح!' : 'Service updated successfully!';
         return redirect()->route('dashboard.services.edit', $service)
-            ->with('success', 'Service updated successfully!');
+            ->with('success', $message);
     }
 
     public function deleteService(Service $service)
     {
         $service->delete();
-        return back()->with('success', 'Service deleted successfully');
+        $message = app()->getLocale() === 'ar' ? 'تم حذف الخدمة بنجاح' : 'Service deleted successfully';
+        return back()->with('success', $message);
     }
 
     // Portfolio Management
@@ -235,17 +238,17 @@ class DashboardController extends Controller
                 'category' => 'required|string|max:100',
             ],
             [
-                'title_en.required' => 'The English title field is required.',
-                'title_en.max' => 'The English title may not be greater than 255 characters.',
-                'title_ar.required' => 'The Arabic title field is required.',
-                'title_ar.max' => 'The Arabic title may not be greater than 255 characters.',
-                'description_en.required' => 'The English description field is required.',
-                'description_ar.required' => 'The Arabic description field is required.',
-                'image.required' => 'An image is required for the portfolio item.',
-                'image.image' => 'The uploaded file must be an image.',
-                'image.max' => 'The image size must not exceed 5MB.',
-                'category.required' => 'The category field is required.',
-                'category.max' => 'The category may not be greater than 100 characters.',
+                'title_en.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالإنجليزية مطلوب' : 'The English title field is required.',
+                'title_en.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز العنوان بالإنجليزية 255 حرفًا' : 'The English title may not be greater than 255 characters.',
+                'title_ar.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالعربية مطلوب' : 'The Arabic title field is required.',
+                'title_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز العنوان بالعربية 255 حرفًا' : 'The Arabic title may not be greater than 255 characters.',
+                'description_en.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالإنجليزية مطلوب' : 'The English description field is required.',
+                'description_ar.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالعربية مطلوب' : 'The Arabic description field is required.',
+                'image.required' => app()->getLocale() === 'ar' ? 'مطلوب صورة لعنصر المحفظة' : 'An image is required for the portfolio item.',
+                'image.image' => app()->getLocale() === 'ar' ? 'يجب أن يكون الملف المرفوع صورة' : 'The uploaded file must be an image.',
+                'image.max' => app()->getLocale() === 'ar' ? 'يجب أن لا يتجاوز حجم الصورة 5 ميجابايت' : 'The image size must not exceed 5MB.',
+                'category.required' => app()->getLocale() === 'ar' ? 'حقل الفئة مطلوب' : 'The category field is required.',
+                'category.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن تتجاوز الفئة 100 حرف' : 'The category may not be greater than 100 characters.',
             ]
         );
 
@@ -254,8 +257,9 @@ class DashboardController extends Controller
         }
 
         Portfolio::create($validated);
+        $message = app()->getLocale() === 'ar' ? 'تمت إضافة عنصر المحفظة بنجاح!' : 'Portfolio item added successfully!';
         return redirect()->route('dashboard.portfolio.index')
-            ->with('success', 'Portfolio item added successfully!');
+            ->with('success', $message);
     }
 
     public function editPortfolio(Portfolio $portfolio)
@@ -275,16 +279,16 @@ class DashboardController extends Controller
                 'category' => 'required|string|max:100',
             ],
             [
-                'title_en.required' => 'The English title field is required.',
-                'title_en.max' => 'The English title may not be greater than 255 characters.',
-                'title_ar.required' => 'The Arabic title field is required.',
-                'title_ar.max' => 'The Arabic title may not be greater than 255 characters.',
-                'description_en.required' => 'The English description field is required.',
-                'description_ar.required' => 'The Arabic description field is required.',
-                'image.image' => 'The uploaded file must be an image.',
-                'image.max' => 'The image size must not exceed 5MB.',
-                'category.required' => 'The category field is required.',
-                'category.max' => 'The category may not be greater than 100 characters.',
+                'title_en.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالإنجليزية مطلوب' : 'The English title field is required.',
+                'title_en.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز العنوان بالإنجليزية 255 حرفًا' : 'The English title may not be greater than 255 characters.',
+                'title_ar.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالعربية مطلوب' : 'The Arabic title field is required.',
+                'title_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز العنوان بالعربية 255 حرفًا' : 'The Arabic title may not be greater than 255 characters.',
+                'description_en.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالإنجليزية مطلوب' : 'The English description field is required.',
+                'description_ar.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالعربية مطلوب' : 'The Arabic description field is required.',
+                'image.image' => app()->getLocale() === 'ar' ? 'يجب أن يكون الملف المرفوع صورة' : 'The uploaded file must be an image.',
+                'image.max' => app()->getLocale() === 'ar' ? 'يجب أن لا يتجاوز حجم الصورة 5 ميجابايت' : 'The image size must not exceed 5MB.',
+                'category.required' => app()->getLocale() === 'ar' ? 'حقل الفئة مطلوب' : 'The category field is required.',
+                'category.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن تتجاوز الفئة 100 حرف' : 'The category may not be greater than 100 characters.',
             ]
         );
 
@@ -297,8 +301,9 @@ class DashboardController extends Controller
         }
 
         $portfolio->update($validated);
+        $message = app()->getLocale() === 'ar' ? 'تم تحديث عنصر المحفظة بنجاح!' : 'Portfolio item updated successfully!';
         return redirect()->route('dashboard.portfolio.index')
-            ->with('success', 'Portfolio item updated successfully!');
+            ->with('success', $message);
     }
 
     public function deletePortfolio(Portfolio $portfolio)
@@ -307,7 +312,8 @@ class DashboardController extends Controller
             Storage::disk('public')->delete($portfolio->image);
         }
         $portfolio->delete();
-        return back()->with('success', 'Portfolio item deleted successfully');
+        $message = app()->getLocale() === 'ar' ? 'تم حذف عنصر المحفظة بنجاح' : 'Portfolio item deleted successfully';
+        return back()->with('success', $message);
     }
 
     // Contact Info Management
@@ -332,23 +338,23 @@ class DashboardController extends Controller
                 'linkedin' => 'nullable|url|max:255',
             ],
             [
-                'email.required' => 'The email address field is required.',
-                'email.email' => 'Please enter a valid email address.',
-                'email.max' => 'The email may not be greater than 255 characters.',
-                'phone.required' => 'The phone number field is required.',
-                'phone.max' => 'The phone number may not be greater than 20 characters.',
-                'address_en.required' => 'The English address field is required.',
-                'address_en.max' => 'The English address may not be greater than 500 characters.',
-                'address_ar.required' => 'The Arabic address field is required.',
-                'address_ar.max' => 'The Arabic address may not be greater than 500 characters.',
-                'facebook.url' => 'The Facebook URL must be a valid URL.',
-                'facebook.max' => 'The Facebook URL may not be greater than 255 characters.',
-                'twitter.url' => 'The Twitter URL must be a valid URL.',
-                'twitter.max' => 'The Twitter URL may not be greater than 255 characters.',
-                'instagram.url' => 'The Instagram URL must be a valid URL.',
-                'instagram.max' => 'The Instagram URL may not be greater than 255 characters.',
-                'linkedin.url' => 'The LinkedIn URL must be a valid URL.',
-                'linkedin.max' => 'The LinkedIn URL may not be greater than 255 characters.',
+                'email.required' => app()->getLocale() === 'ar' ? 'حقل البريد الإلكتروني مطلوب' : 'The email address field is required.',
+                'email.email' => app()->getLocale() === 'ar' ? 'الرجاء إدخال بريد إلكتروني صالح' : 'Please enter a valid email address.',
+                'email.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز البريد الإلكتروني 255 حرفًا' : 'The email may not be greater than 255 characters.',
+                'phone.required' => app()->getLocale() === 'ar' ? 'حقل رقم الهاتف مطلوب' : 'The phone number field is required.',
+                'phone.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز رقم الهاتف 20 حرفًا' : 'The phone number may not be greater than 20 characters.',
+                'address_en.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالإنجليزية مطلوب' : 'The English address field is required.',
+                'address_en.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز العنوان بالإنجليزية 500 حرف' : 'The English address may not be greater than 500 characters.',
+                'address_ar.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالعربية مطلوب' : 'The Arabic address field is required.',
+                'address_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز العنوان بالعربية 500 حرف' : 'The Arabic address may not be greater than 500 characters.',
+                'facebook.url' => app()->getLocale() === 'ar' ? 'يجب أن يكون رابط فيسبوك صالحًا' : 'The Facebook URL must be a valid URL.',
+                'facebook.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز رابط فيسبوك 255 حرفًا' : 'The Facebook URL may not be greater than 255 characters.',
+                'twitter.url' => app()->getLocale() === 'ar' ? 'يجب أن يكون رابط تويتر صالحًا' : 'The Twitter URL must be a valid URL.',
+                'twitter.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز رابط تويتر 255 حرفًا' : 'The Twitter URL may not be greater than 255 characters.',
+                'instagram.url' => app()->getLocale() === 'ar' ? 'يجب أن يكون رابط إنستجرام صالحًا' : 'The Instagram URL must be a valid URL.',
+                'instagram.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز رابط إنستجرام 255 حرفًا' : 'The Instagram URL may not be greater than 255 characters.',
+                'linkedin.url' => app()->getLocale() === 'ar' ? 'يجب أن يكون رابط لينكد إن صالحًا' : 'The LinkedIn URL must be a valid URL.',
+                'linkedin.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز رابط لينكد إن 255 حرفًا' : 'The LinkedIn URL may not be greater than 255 characters.',
             ]
         );
 
@@ -356,7 +362,8 @@ class DashboardController extends Controller
         $contactInfo->fill($validated);
         $contactInfo->save();
 
-        return back()->with('success', 'Contact information updated successfully!');
+        $message = app()->getLocale() === 'ar' ? 'تم تحديث معلومات الاتصال بنجاح!' : 'Contact information updated successfully!';
+        return back()->with('success', $message);
     }
 
     // Welcome Page Content Management
@@ -378,18 +385,18 @@ class DashboardController extends Controller
             'cta_text_ar' => 'required|string|max:100',
             'cta_link' => 'required|string|max:255',
         ], [
-            'title_en.required' => 'The English title field is required.',
-            'title_ar.required' => 'The Arabic title field is required.',
-            'description_en.required' => 'The English description field is required.',
-            'description_ar.required' => 'The Arabic description field is required.',
-            'image.image' => 'The image must be an image file.',
-            'image.max' => 'The image size must not exceed 5MB.',
-            'cta_text_en.required' => 'The English CTA text field is required.',
-            'cta_text_en.max' => 'The English CTA text may not be greater than 100 characters.',
-            'cta_text_ar.required' => 'The Arabic CTA text field is required.',
-            'cta_text_ar.max' => 'The Arabic CTA text may not be greater than 100 characters.',
-            'cta_link.required' => 'The CTA link field is required.',
-            'cta_link.max' => 'The CTA link may not be greater than 255 characters.',
+            'title_en.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالإنجليزية مطلوب' : 'The English title field is required.',
+            'title_ar.required' => app()->getLocale() === 'ar' ? 'حقل العنوان بالعربية مطلوب' : 'The Arabic title field is required.',
+            'description_en.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالإنجليزية مطلوب' : 'The English description field is required.',
+            'description_ar.required' => app()->getLocale() === 'ar' ? 'حقل الوصف بالعربية مطلوب' : 'The Arabic description field is required.',
+            'image.image' => app()->getLocale() === 'ar' ? 'يجب أن يكون الصورة ملفًا صورة' : 'The image must be an image file.',
+            'image.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز حجم الصورة 5 ميجابايت' : 'The image size must not exceed 5MB.',
+            'cta_text_en.required' => app()->getLocale() === 'ar' ? 'حقل النص CTA بالإنجليزية مطلوب' : 'The English CTA text field is required.',
+            'cta_text_en.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز النص CTA بالإنجليزية 100 حرفًا' : 'The English CTA text may not be greater than 100 characters.',
+            'cta_text_ar.required' => app()->getLocale() === 'ar' ? 'حقل النص CTA بالعربية مطلوب' : 'The Arabic CTA text field is required.',
+            'cta_text_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز النص CTA بالعربية 100 حرفًا' : 'The Arabic CTA text may not be greater than 100 characters.',
+            'cta_link.required' => app()->getLocale() === 'ar' ? 'حقل رابط CTA مطلوب' : 'The CTA link field is required.',
+            'cta_link.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز رابط CTA 255 حرفًا' : 'The CTA link may not be greater than 255 characters.',
         ]);
 
         $about = About::firstOrNew();
@@ -434,22 +441,22 @@ class DashboardController extends Controller
                 'image' => 'nullable|image|max:2048',
             ],
             [
-                'name_en.required' => 'The English name field is required.',
-                'name_en.max' => 'The English name may not be greater than 255 characters.',
-                'name_ar.required' => 'The Arabic name field is required.',
-                'name_ar.max' => 'The Arabic name may not be greater than 255 characters.',
-                'position_en.required' => 'The English position field is required.',
-                'position_en.max' => 'The English position may not be greater than 255 characters.',
-                'position_ar.required' => 'The Arabic position field is required.',
-                'position_ar.max' => 'The Arabic position may not be greater than 255 characters.',
-                'content_en.required' => 'The English testimonial content is required.',
-                'content_ar.required' => 'The Arabic testimonial content is required.',
-                'rating.required' => 'The rating field is required.',
-                'rating.integer' => 'The rating must be a number.',
-                'rating.min' => 'The rating must be at least 1 star.',
-                'rating.max' => 'The rating may not be greater than 5 stars.',
-                'image.image' => 'The uploaded file must be an image.',
-                'image.max' => 'The image size must not exceed 2MB.',
+                'name_en.required' => app()->getLocale() === 'ar' ? 'حقل الاسم بالإنجليزية مطلوب' : 'The English name field is required.',
+                'name_en.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز الاسم بالإنجليزية 255 حرفًا' : 'The English name may not be greater than 255 characters.',
+                'name_ar.required' => app()->getLocale() === 'ar' ? 'حقل الاسم بالعربية مطلوب' : 'The Arabic name field is required.',
+                'name_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز الاسم بالعربية 255 حرفًا' : 'The Arabic name may not be greater than 255 characters.',
+                'position_en.required' => app()->getLocale() === 'ar' ? 'حقل المنصب بالإنجليزية مطلوب' : 'The English position field is required.',
+                'position_en.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز المنصب بالإنجليزية 255 حرفًا' : 'The English position may not be greater than 255 characters.',
+                'position_ar.required' => app()->getLocale() === 'ar' ? 'حقل المنصب بالعربية مطلوب' : 'The Arabic position field is required.',
+                'position_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز المنصب بالعربية 255 حرفًا' : 'The Arabic position may not be greater than 255 characters.',
+                'content_en.required' => app()->getLocale() === 'ar' ? 'حقل محتوى الشهادة بالإنجليزية مطلوب' : 'The English testimonial content is required.',
+                'content_ar.required' => app()->getLocale() === 'ar' ? 'حقل محتوى الشهادة بالعربية مطلوب' : 'The Arabic testimonial content is required.',
+                'rating.required' => app()->getLocale() === 'ar' ? 'حقل التقييم مطلوب' : 'The rating field is required.',
+                'rating.integer' => app()->getLocale() === 'ar' ? 'يجب أن يكون التقييم رقمًا' : 'The rating must be a number.',
+                'rating.min' => app()->getLocale() === 'ar' ? 'يجب أن يكون التقييم على الأقل 1 نجمة' : 'The rating must be at least 1 star.',
+                'rating.max' => app()->getLocale() === 'ar' ? 'يجب أن لا يتجاوز التقييم 5 نجوم' : 'The rating may not be greater than 5 stars.',
+                'image.image' => app()->getLocale() === 'ar' ? 'يجب أن يكون الملف المرفوع صورة' : 'The uploaded file must be an image.',
+                'image.max' => app()->getLocale() === 'ar' ? 'يجب أن لا يتجاوز حجم الصورة 2 ميجابايت' : 'The image size must not exceed 2MB.',
             ]
         );
 
@@ -481,22 +488,22 @@ class DashboardController extends Controller
                 'image' => 'nullable|image|max:2048',
             ],
             [
-                'name_en.required' => 'The English name field is required.',
-                'name_en.max' => 'The English name may not be greater than 255 characters.',
-                'name_ar.required' => 'The Arabic name field is required.',
-                'name_ar.max' => 'The Arabic name may not be greater than 255 characters.',
-                'position_en.required' => 'The English position field is required.',
-                'position_en.max' => 'The English position may not be greater than 255 characters.',
-                'position_ar.required' => 'The Arabic position field is required.',
-                'position_ar.max' => 'The Arabic position may not be greater than 255 characters.',
-                'content_en.required' => 'The English testimonial content is required.',
-                'content_ar.required' => 'The Arabic testimonial content is required.',
-                'rating.required' => 'The rating field is required.',
-                'rating.integer' => 'The rating must be a number.',
-                'rating.min' => 'The rating must be at least 1 star.',
-                'rating.max' => 'The rating may not be greater than 5 stars.',
-                'image.image' => 'The uploaded file must be an image.',
-                'image.max' => 'The image size must not exceed 2MB.',
+                'name_en.required' => app()->getLocale() === 'ar' ? 'حقل الاسم بالإنجليزية مطلوب' : 'The English name field is required.',
+                'name_en.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز الاسم بالإنجليزية 255 حرفًا' : 'The English name may not be greater than 255 characters.',
+                'name_ar.required' => app()->getLocale() === 'ar' ? 'حقل الاسم بالعربية مطلوب' : 'The Arabic name field is required.',
+                'name_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز الاسم بالعربية 255 حرفًا' : 'The Arabic name may not be greater than 255 characters.',
+                'position_en.required' => app()->getLocale() === 'ar' ? 'حقل المنصب بالإنجليزية مطلوب' : 'The English position field is required.',
+                'position_en.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز المنصب بالإنجليزية 255 حرفًا' : 'The English position may not be greater than 255 characters.',
+                'position_ar.required' => app()->getLocale() === 'ar' ? 'حقل المنصب بالعربية مطلوب' : 'The Arabic position field is required.',
+                'position_ar.max' => app()->getLocale() === 'ar' ? 'لا يمكن أن يتجاوز المنصب بالعربية 255 حرفًا' : 'The Arabic position may not be greater than 255 characters.',
+                'content_en.required' => app()->getLocale() === 'ar' ? 'حقل محتوى الشهادة بالإنجليزية مطلوب' : 'The English testimonial content is required.',
+                'content_ar.required' => app()->getLocale() === 'ar' ? 'حقل محتوى الشهادة بالعربية مطلوب' : 'The Arabic testimonial content is required.',
+                'rating.required' => app()->getLocale() === 'ar' ? 'حقل التقييم مطلوب' : 'The rating field is required.',
+                'rating.integer' => app()->getLocale() === 'ar' ? 'يجب أن يكون التقييم رقمًا' : 'The rating must be a number.',
+                'rating.min' => app()->getLocale() === 'ar' ? 'يجب أن يكون التقييم على الأقل 1 نجمة' : 'The rating must be at least 1 star.',
+                'rating.max' => app()->getLocale() === 'ar' ? 'يجب أن لا يتجاوز التقييم 5 نجوم' : 'The rating may not be greater than 5 stars.',
+                'image.image' => app()->getLocale() === 'ar' ? 'يجب أن يكون الملف المرفوع صورة' : 'The uploaded file must be an image.',
+                'image.max' => app()->getLocale() === 'ar' ? 'يجب أن لا يتجاوز حجم الصورة 2 ميجابايت' : 'The image size must not exceed 2MB.',
             ]
         );
 
@@ -510,7 +517,7 @@ class DashboardController extends Controller
 
         $testimonial->update($validated);
         return redirect()->route('dashboard.testimonials.index')
-            ->with('success', 'Testimonial updated successfully!');
+            ->with('success', app()->getLocale() === 'ar' ? 'تم تحديث الشهادة بنجاح!' : 'Testimonial updated successfully!');
     }
 
     public function deleteTestimonial(Testimonial $testimonial)
@@ -520,6 +527,6 @@ class DashboardController extends Controller
         }
         $testimonial->delete();
         return redirect()->route('dashboard.testimonials.index')
-                         ->with('success', __('Testimonial deleted successfully'));
+                         ->with('success', app()->getLocale() === 'ar' ? 'تم حذف الشهادة بنجاح!' : 'Testimonial deleted successfully!');
     }
 }
